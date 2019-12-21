@@ -24,9 +24,14 @@ public class TransientHandler {
         Statistics cletStatistics = new Statistics(0, 0, 0);
         Statistics cloudStatistics = new Statistics(0, 0, 0);
 
-        Statistics ensCletStat = new Statistics(0, 0, 0);  //oggetto che memorizza l'ensamble statistics
-        Statistics ensCloudStat = new Statistics(0, 0, 0);  //oggetto che memorizza l'ensamble statistics
+        //TODO trasformare in ensCletTimeStat o ensCletRespTimeStat
+        // Oggetto che memorizza l'ensamble statistics riferite al tempo
+        Statistics ensCletStat = new Statistics(0, 0, 0);
+        Statistics ensCloudStat = new Statistics(0, 0, 0);
 
+        // Oggetto che memorizza l'ensamble statistics riferite alla popolazione
+        Statistics ensCletPopStat = new Statistics(0, 0, 0);
+        Statistics ensCloudPopStat = new Statistics(0, 0, 0);
         /**
          * Liste utilizzate per salvare le statistiche relative alla popolazione media nel caso transient
          */
@@ -100,14 +105,8 @@ public class TransientHandler {
             statisticsHandler.computeStatistics(ensCletStat, i, cletStatistics.getMean(), alpha);
             statisticsHandler.computeStatistics(ensCloudStat, i, cloudStatistics.getMean(), alpha);
 
-            /**
-             * copio le statistiche in avgCletPopulation e avgCloudPopulation.
-             * Questi verranno scritti su file per realizzare grafici in Matlab.
-             * Da "ensCletStat" prendo le statistiche relative a media, var e dev std.
-             * Da "cletStatistics" prendo quelle relative alla popolazione media
-             */
-            //statisticsHandler.copyStatistic(ensCletStat, cletStatistics, avgCletPopulation.get(i));
-            //statisticsHandler.copyStatistic(ensCloudStat, cloudStatistics, avgCloudPopulation.get(i));
+            statisticsHandler.computeStatistics(ensCletPopStat, i, cletStatistics.getTotalJob(), alpha);
+            statisticsHandler.computeStatistics(ensCloudPopStat, i, cloudStatistics.getTotalJob(), alpha);
 
             //TODO cancellare
 /*
@@ -121,10 +120,20 @@ public class TransientHandler {
 */
             //TODO inserire int di conf dell'ens DOPO aver valutato il punto precedente
 
-            //System.out.println("\ntransient stat: round " + i);
-            //System.out.println(avgCletPopulation.get(i).getConfidenceInterval());
-            //System.out.println(avgCloudPopulation.get(i).getConfidenceInterval());
+            /**
+             * copio le statistiche in avgCletPopulation e avgCloudPopulation.
+             * Questi verranno scritti su file per realizzare grafici in Matlab.
+             * Da "ensCletStat" prendo le statistiche relative a media, var e dev std.
+             * Da "cletStatistics" prendo quelle relative alla popolazione media
+             */
+            /*
+            statisticsHandler.copyStatistic(ensCletStat, cletStatistics, avgCletPopulation.get(i));
+            statisticsHandler.copyStatistic(ensCloudStat, cloudStatistics, avgCloudPopulation.get(i));
 
+            System.out.println("\ntransient stat: round " + i);
+            System.out.println(avgCletPopulation.get(i).getConfidenceInterval());
+            System.out.println(avgCloudPopulation.get(i).getConfidenceInterval());
+*/
             /**
              * Prendo le statistiche relative alla popolazione prese per il round
              */
@@ -138,27 +147,39 @@ public class TransientHandler {
         System.out.println("\n+++ TRANSIENT STATS +++");
         statisticsHandler.printTransientStats(ensCletStat, ensCloudStat, alpha, round, ensamblePopulation_clet, ensamblePopulation_cloud);
 
+        System.out.println("\n*** POP STAT\n" + ensCletPopStat.getMean() + "\n" + ensCloudPopStat.getMean());
+        System.out.println(ensCletPopStat.getMeanList());
+        System.out.println(ensCletPopStat.getConfidenceIntervalList());
+        System.out.println(ensCloudPopStat.getMeanList());
+        System.out.println(ensCloudPopStat.getConfidenceIntervalList());
         //for(i=1; i<=round; ++i)
         //System.out.println("* i=" + i + " " + ensCletStat.getMeanList().get(i-1) + " " + ensCletStat.getConfidenceIntervalList().get(i-1));
 
         /**
          * Invio le statistiche sul file
          */
-        //printer.printRoundPopulation(ensamblePopulation_clet, 1, 1, algType);
-        //printer.printRoundPopulation(ensamblePopulation_cloud, 2, 1, algType);
-
+        /*
+        printer.printRoundPopulation(ensamblePopulation_clet, 1, 1, algType);
+        printer.printRoundPopulation(ensamblePopulation_cloud, 2, 1, algType);
+*/
         //TODO cancellare
 /*
         System.out.println("*******\nsize test: " + ensCletStat.getMeanList().size());
         System.out.println("size test: " + ensCletStat.getConfidenceIntervalList().size());
 */
-        printer.printEnsembleStat(ensCletStat.getMeanList(), 1, 1, algType, "mean");
-        //printer.printEnsembleStat(ensCletStat.getStdDevList(), 1, 1, algType, "devStd");
-        printer.printEnsembleStat(ensCletStat.getConfidenceIntervalList(), 1, 1, algType, "confInt");
+        //scrivo su file i dati relativi al tempo medio di risposta
+        printer.printEnsembleStat(ensCletStat.getMeanList(), 1, 1, algType, "mean", "ensStat");
+        printer.printEnsembleStat(ensCletStat.getConfidenceIntervalList(), 1, 1, algType, "confInt", "ensStat");
 
-        printer.printEnsembleStat(ensCloudStat.getMeanList(), 2, 1, algType, "mean");
-        //printer.printEnsembleStat(ensCloudStat.getStdDevList(), 2, 1, algType, "devStd");
-        printer.printEnsembleStat(ensCloudStat.getConfidenceIntervalList(), 2, 1, algType, "confInt");
+        printer.printEnsembleStat(ensCloudStat.getMeanList(), 2, 1, algType, "mean", "ensStat");
+        printer.printEnsembleStat(ensCloudStat.getConfidenceIntervalList(), 2, 1, algType, "confInt", "ensStat");
+
+        //scrivo su file i dati relativi alla popolazione media
+        printer.printEnsembleStat(ensCletPopStat.getMeanList(), 1, 1, algType, "mean", "population");
+        printer.printEnsembleStat(ensCletPopStat.getConfidenceIntervalList(), 1, 1, algType, "confInt", "population");
+
+        printer.printEnsembleStat(ensCloudPopStat.getMeanList(), 2, 1, algType, "mean", "population");
+        printer.printEnsembleStat(ensCloudPopStat.getConfidenceIntervalList(), 2, 1, algType, "confInt", "population");
 
         /**
          * Scrivo le statistiche sul clet e sul cloud

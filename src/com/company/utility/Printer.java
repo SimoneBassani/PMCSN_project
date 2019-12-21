@@ -621,8 +621,9 @@ public class Printer {
     }
 
 
-    public void printEnsembleStat(ArrayList<Double> list, int type, int policy, int algorithm, String statName) throws IOException {
-        String path = "C:\\Users\\Simone\\Desktop\\simulazione_pmcsn\\ensStat\\";
+    public void printEnsembleStat(ArrayList<Double> list, int type, int policy, int algorithm, String statName, String directory) throws IOException {
+        //String path = "C:\\Users\\Simone\\Desktop\\simulazione_pmcsn\\ensStat\\";
+        String path = "C:\\Users\\Simone\\Desktop\\simulazione_pmcsn\\" + directory + "\\";
         String alg;
 
         int i;

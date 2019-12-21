@@ -438,9 +438,11 @@ public class Controller {
                 }
             }
         }
+        /*
         printer.printJobStat(jobInSystem, jobInSystem_1, jobInSystem_2, jobInClet, jobInClet_1, jobInClet_2, jobInCloud,
                 jobInCloud_1, jobInCloud_2, jobOutSystem, jobOutSystem_1, jobOutSystem_2, jobOutClet, jobOutClet_1,
                 jobOutClet_2, jobOutCloud, jobOutCloud_1, jobOutCloud_2, time);
+        */
         /*
         printer.printStatistics(time, events, sums, n, jobProcessed, jobProcessedClet, jobProcessedCloud, jobArrived,
                 area, areaClet, areaCloud, areaClet1, areaClet2, areaCloud1, areaCloud2);
@@ -451,9 +453,13 @@ public class Controller {
 
         System.out.println("**");
         System.out.println(cletStatistics.getMean());
-        System.out.println(cletStatistics.getVariance());
-        System.out.println(cletStatistics.getStdDeviation());
-        System.out.println(cletStatistics.getConfidenceInterval());
+        //System.out.println(cletStatistics.getVariance());
+        //System.out.println(cletStatistics.getStdDeviation());
+        //System.out.println(cletStatistics.getConfidenceInterval());
+        System.out.println(cletStatistics.getTotalJob());
+
+        System.out.println(cloudStatistics.getMean());
+        System.out.println(cloudStatistics.getTotalJob());
         //exit(0);
         /**
          * Adesso ogni lista dei batch ha le medie di ogni batch. Posso calcolare la media della statistica

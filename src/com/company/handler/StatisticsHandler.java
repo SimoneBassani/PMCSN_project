@@ -106,6 +106,7 @@ public class StatisticsHandler {
         double criticalValue = rvms.idfStudent((n - 1), 1 - (alpha / 2));
         double confInt = (criticalValue * stdDev) / Math.sqrt(n - 1);
         statistics.getConfidenceIntervalList().add(confInt);    //#
+        statistics.setConfidenceInterval(confInt);
     }
 
     /**
@@ -175,8 +176,7 @@ public class StatisticsHandler {
 
         //computeConfidenceIntervalEstimate(ensCloudStat, alpha, round);
         double cloudConfInt = ensCloudStat.getConfidenceInterval();
-        System.out.println("int di conf: " + (ensCloudStat.getMean() - cloudConfInt) + ", " +
-                (ensCloudStat.getMean() + cloudConfInt));
+        System.out.println("int di conf: " + (ensCloudStat.getMean() - cloudConfInt) + ", " + (ensCloudStat.getMean() + cloudConfInt));
 
         System.out.println("pop: " + ensCloudPop.get(ensCloudPop.size()-1));
     }
@@ -230,16 +230,21 @@ public class StatisticsHandler {
         System.out.println("  avg wait cloud ..... =   " + f.format(wait_in_cloud));
 */
         double job_in_system = area / time.getCurrent();
+
+        //job presenti nel clet
         double job1_in_clet = areaClet1 / time.getCurrent();
         double job2_in_clet = areaClet2 / time.getCurrent();
         double job_in_clet = areaClet / time.getCurrent();
-        double job1_in_cloud = areaCloud1 / time.getCurrent();
-        double job2_in_cloud = areaCloud2 / time.getCurrent();
-        double job_in_cloud = areaCloud / time.getCurrent();
 
         cletStatistics.setTotalJob(job_in_clet);
         cletStatistics.setTotalJob_1(job1_in_clet);
         cletStatistics.setTotalJob_2(job2_in_clet);
+
+        // job presenti nel cloud
+        double job1_in_cloud = areaCloud1 / time.getCurrent();
+        double job2_in_cloud = areaCloud2 / time.getCurrent();
+        double job_in_cloud = areaCloud / time.getCurrent();
+
         cloudStatistics.setTotalJob(job_in_cloud);
         cloudStatistics.setTotalJob_1(job1_in_cloud);
         cloudStatistics.setTotalJob_2(job2_in_cloud);
