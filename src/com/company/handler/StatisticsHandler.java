@@ -65,8 +65,48 @@ public class StatisticsHandler {
         statistics.setStdDeviation(pow(variance / n, 0.5));
 
         statistics.getMeanList().add(mean); //#
+
+        Rvms rvms = new Rvms();
+        double alpha = 0.05;
+        double stdDev = statistics.getStdDeviation();
+        double criticalValue = rvms.idfStudent((n - 1), 1 - (alpha / 2));
+        double confInt = (criticalValue * stdDev) / Math.sqrt(n - 1);
+        statistics.getConfidenceIntervalList().add(confInt);    //#
     }
 
+
+    /**
+     * Tale metodo implementa l'algorimo di Welford per calcolare la media e la deviazione std di un campione.
+     * Quindi calcola l'intervallo di confidenza e salva tutte le statistiche calcolate nelle liste dinamiche
+     * previste all'interno dell'oggetto di tipo "Statistics" passato come parametro
+     */
+    public void computeStatistics(Statistics statistics, long n, double x, double alpha) {    //n=# job, x=valore
+
+        double mean = statistics.getMean();
+        double variance = statistics.getVariance();
+
+        double d = x - mean; //d è la differenza tra x(i) e la media x(i-1)
+
+        //calcolo media, varianza e deviazione std
+        mean += d / n;
+
+        if (n > 1)
+            variance += ((n - 1) * pow(d, 2)) / n;
+        else
+            variance = 0.0;
+
+        //aggiorno l'oggetto legato a tale statistica
+        statistics.setMean(mean);
+        statistics.setVariance(variance);
+        double stdDev = pow(variance / n, 0.5);
+
+        statistics.getMeanList().add(mean); //#
+
+        Rvms rvms = new Rvms();
+        double criticalValue = rvms.idfStudent((n - 1), 1 - (alpha / 2));
+        double confInt = (criticalValue * stdDev) / Math.sqrt(n - 1);
+        statistics.getConfidenceIntervalList().add(confInt);    //#
+    }
 
     /**
      * Metodo che calcola un intervallo di confidenza. Restituisce t*s / (n-1)^0.5
@@ -133,7 +173,7 @@ public class StatisticsHandler {
         //Cloud
         System.out.println("\ncloud \nTEMPO DI RISPOSTA\nmean: " + ensCloudStat.getMean() + "\nvar: " + ensCloudStat.getVariance());
 
-        computeConfidenceIntervalEstimate(ensCloudStat, alpha, round);
+        //computeConfidenceIntervalEstimate(ensCloudStat, alpha, round);
         double cloudConfInt = ensCloudStat.getConfidenceInterval();
         System.out.println("int di conf: " + (ensCloudStat.getMean() - cloudConfInt) + ", " +
                 (ensCloudStat.getMean() + cloudConfInt));

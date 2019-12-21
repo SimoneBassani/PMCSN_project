@@ -101,14 +101,9 @@ public class TransientHandler {
              * IDEA: Per evitare l'uso delle strutture "avg" posso definire una lista in "ensCLet/CloudStat"
              * e usare l'indice del round come indice della lista.
              */
-            statisticsHandler.computeMeanAndStdDeviation(ensCletStat, i, cletStatistics.getMean());
-            statisticsHandler.computeMeanAndStdDeviation(ensCloudStat, i, cloudStatistics.getMean());
+            statisticsHandler.computeStatistics(ensCletStat, i, cletStatistics.getMean(), alpha);
+            statisticsHandler.computeStatistics(ensCloudStat, i, cloudStatistics.getMean(), alpha);
 
-            //ensCletStat.getMeanList().add(ensCletStat.getMean());
-            //ensCletStat.getStdDevList().add(ensCletStat.getStdDeviation());
-
-            //ensCloudStat.getMeanList().add(ensCloudStat.getMean());
-            //ensCloudStat.getStdDevList().add(ensCloudStat.getStdDeviation());
             /**
              * copio le statistiche in avgCletPopulation e avgCloudPopulation.
              * Questi verranno scritti su file per realizzare grafici in Matlab.
@@ -117,9 +112,6 @@ public class TransientHandler {
              */
             //statisticsHandler.copyStatistic(ensCletStat, cletStatistics, avgCletPopulation.get(i));
             //statisticsHandler.copyStatistic(ensCloudStat, cloudStatistics, avgCloudPopulation.get(i));
-
-            statisticsHandler.computeConfidenceIntervalEstimate(ensCletStat, alpha, i);
-            statisticsHandler.computeConfidenceIntervalEstimate(ensCloudStat, alpha, i);
 
             //TODO cancellare
 /*
