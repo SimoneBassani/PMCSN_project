@@ -23,6 +23,7 @@ public class StatisticsHandler {
         System.out.println("\n++++  computeMean&stdDev, valore di n:" + n + "    ++++");
         System.out.println("++++  computeMean&stdDev, valore di x:" + x + "    ++++\n");
 */
+/*
         double mean = statistics.getMean();
         double variance = statistics.getVariance();
 
@@ -40,13 +41,32 @@ public class StatisticsHandler {
         statistics.setMean(mean);
         statistics.setVariance(variance);
         statistics.setStdDeviation(pow(variance / n, 0.5));
+*/
 /*
         System.out.println("variance: " + statistics.getVariance());
         System.out.println("dev std: " + statistics.getStdDeviation());
  */
+        double mean = statistics.getMean();
+        double variance = statistics.getVariance();
+
+        double d = x - mean; //d è la differenza tra x(i) e la media x(i-1)
+
+        //calcolo media, varianza e deviazione std
+        mean += d / n;
+
+        if (n > 1)
+            variance += ((n - 1) * pow(d, 2)) / n;
+        else
+            variance = 0.0;
+
+        //aggiorno l'oggetto legato a tale statistica
+        statistics.setMean(mean);
+        statistics.setVariance(variance);
+        statistics.setStdDeviation(pow(variance / n, 0.5));
+
+        statistics.getMeanList().add(mean); //#
     }
 
-    //todo giusto passare il # di round??
 
     /**
      * Metodo che calcola un intervallo di confidenza. Restituisce t*s / (n-1)^0.5
@@ -55,7 +75,7 @@ public class StatisticsHandler {
      * @param alpha
      * @return
      */
-    public double computeConfidenceIntervalEstimate(Statistics statistics, double alpha, int n) {
+    public void computeConfidenceIntervalEstimate(Statistics statistics, double alpha, int n) {
 
         Rvms rvms = new Rvms();
 
@@ -72,7 +92,9 @@ public class StatisticsHandler {
         System.out.println("critical value: " + criticalValue);
         System.out.println("return value: " + (criticalValue * stdDev) / Math.sqrt(n - 1));
 */
-        return ((criticalValue * stdDev) / Math.sqrt(n - 1));
+        double confInt = (criticalValue * stdDev) / Math.sqrt(n - 1);
+        statistics.getConfidenceIntervalList().add(confInt);    //#
+        //return ((criticalValue * stdDev) / Math.sqrt(n - 1));
     }
 
 
@@ -101,7 +123,8 @@ public class StatisticsHandler {
         //Cloudlet
         System.out.println("\nclet \nTEMPO DI RISPOSTA\nmean: " + ensCletStat.getMean() + "\nvar: " + ensCletStat.getVariance());
 
-        double cletConfInt = computeConfidenceIntervalEstimate(ensCletStat, alpha, round);
+        //computeConfidenceIntervalEstimate(ensCletStat, alpha, round);
+        double cletConfInt = ensCletStat.getConfidenceInterval();
         System.out.println("int di conf: " + (ensCletStat.getMean() - cletConfInt) + ", " +
                 (ensCletStat.getMean() + cletConfInt));
 
@@ -110,7 +133,8 @@ public class StatisticsHandler {
         //Cloud
         System.out.println("\ncloud \nTEMPO DI RISPOSTA\nmean: " + ensCloudStat.getMean() + "\nvar: " + ensCloudStat.getVariance());
 
-        double cloudConfInt = computeConfidenceIntervalEstimate(ensCloudStat, alpha, round);
+        computeConfidenceIntervalEstimate(ensCloudStat, alpha, round);
+        double cloudConfInt = ensCloudStat.getConfidenceInterval();
         System.out.println("int di conf: " + (ensCloudStat.getMean() - cloudConfInt) + ", " +
                 (ensCloudStat.getMean() + cloudConfInt));
 
@@ -129,12 +153,14 @@ public class StatisticsHandler {
         BatchMeanHandler batchMeanHandler = BatchMeanHandler.getInstance();
 
         System.out.println("\nclet \nmean: " + cletStatistics.getMean() + "\nvar: " + cletStatistics.getVariance());
-        double cletConfInt = computeConfidenceIntervalEstimate(cletStatistics, alpha, batchMeanHandler.getBatchMeanCletMeans().size());
+        computeConfidenceIntervalEstimate(cletStatistics, alpha, batchMeanHandler.getBatchMeanCletMeans().size());
+        double cletConfInt = cletStatistics.getConfidenceInterval();
         System.out.println("int di conf: " + (cletStatistics.getMean() - cletConfInt) + ", " +
                 (cletStatistics.getMean() + cletConfInt));
 
         System.out.println("\ncloud \nmean: " + cloudStatistics.getMean() + "\nvar: " + cloudStatistics.getVariance());
-        double cloudConfInt = computeConfidenceIntervalEstimate(cloudStatistics, alpha, batchMeanHandler.getBatchMeanCloudMeans().size());
+        computeConfidenceIntervalEstimate(cloudStatistics, alpha, batchMeanHandler.getBatchMeanCloudMeans().size());
+        double cloudConfInt = cloudStatistics.getConfidenceInterval();
         System.out.println("int di conf: " + (cloudStatistics.getMean() - cloudConfInt) + ", " +
                 (cloudStatistics.getMean() + cloudConfInt));
     }

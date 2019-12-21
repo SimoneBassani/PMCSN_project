@@ -11,9 +11,18 @@ public class Statistics {
     private double variance;
     private double stdDeviation;
     private double confidenceInterval;
+
+    //TODO utile?
     private double totalJob;
     private double totalJob_1;
     private double totalJob_2;
+
+    // statistiche di ogni round. Per le "ensStat" sono quelle utilzzate per ottenere i valori ensemble.
+    // Per le "roundStat" sono i valori ottenuti per ogni round
+    private ArrayList<Double> meanList = new ArrayList<>();
+    //private ArrayList<Double> stdDevList = new ArrayList<>();
+    private ArrayList<Double> confidenceIntervalList = new ArrayList<>();
+
 
     public Statistics(double mean, double variance, double stdDeviation) {
         this.mean = mean;
@@ -84,6 +93,24 @@ public class Statistics {
     }
 
     public void setConfidenceInterval(double confidenceInterval) {
+
         this.confidenceInterval = confidenceInterval;
     }
+
+    public ArrayList<Double> getMeanList() { return meanList; }
+
+    public void setMeanList(ArrayList<Double> meanList) {
+        this.meanList = meanList;
+    }
+
+    //public ArrayList<Double> getStdDevList() {   return stdDevList; }
+
+    //public void setStdDevList(ArrayList<Double> stdDevList) {  this.stdDevList = stdDevList; }
+
+    public ArrayList<Double> getConfidenceIntervalList() {
+        return confidenceIntervalList;
+    }
+
+    public void setConfidenceIntervalList(ArrayList<Double> confidenceIntervalList) {
+        this.confidenceIntervalList = confidenceIntervalList; }
 }

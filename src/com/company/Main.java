@@ -8,13 +8,19 @@ import com.company.utility.Configuration;
 import com.company.utility.Printer;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 //import static com.company.handler.BatchMeanHandler.computeSteadyStateStatistics;
 //import static com.company.handler.TransientHandler.computeTransientStatistics;
 import static java.lang.System.exit;
 
+/**
+ * TODO:
+ * - controllare int di conf anche per il caso steady-state
+ * - studiare anche il tempo di risposta medio per ogni round? Capirne l'utilità
+ * - controllare il thr
+ * - decidere la versione della gestione dei job interrotti
+ */
 public class Main {
 
     public static void main(String[] args) throws IOException {

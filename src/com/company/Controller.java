@@ -313,10 +313,11 @@ public class Controller {
                      */
                     if(policy == 1) {
                         statisticsHandler.computeMeanAndStdDeviation(cletStatistics, jobProcessedClet, events.get(e).getExecutionTime());
-                        /*
+/*
+                        System.out.println("mean & std dev nel round");
                         System.out.println(cletStatistics.getMean());
                         System.out.println(cletStatistics.getVariance());
-                         */
+*/
                     }else{
                         //todo va effettuata l'analisi di batch misti per le stat di sistema?
                         /**
@@ -448,6 +449,12 @@ public class Controller {
                 jobArrived, area, areaClet, areaCloud, areaClet1, areaClet2, areaCloud1, areaCloud2, cletStatistics,
                 cloudStatistics);
 
+        System.out.println("**");
+        System.out.println(cletStatistics.getMean());
+        System.out.println(cletStatistics.getVariance());
+        System.out.println(cletStatistics.getStdDeviation());
+        System.out.println(cletStatistics.getConfidenceInterval());
+        //exit(0);
         /**
          * Adesso ogni lista dei batch ha le medie di ogni batch. Posso calcolare la media della statistica
          */
@@ -1049,7 +1056,7 @@ public class Controller {
         double departureTime = arrivalTime + executionTime;     //tempo di partenza del job
 
         int idleServer = findServer(events, dimList);            //ottengo l'indice di un server idle del clet
-        System.out.println("idle server scelto: " + idleServer + " per job di indice: " + classIndex);
+        //System.out.println("idle server scelto: " + idleServer + " per job di indice: " + classIndex);
 
         if(idleServer == 0) {
             System.out.println("\n\n +++ CLET PIENO +++ \n\n");

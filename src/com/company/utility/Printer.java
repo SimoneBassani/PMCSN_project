@@ -10,7 +10,20 @@ import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import static jdk.nashorn.internal.objects.Global.print;
+
 public class Printer {
+
+    /**
+     * Stampa un arraylist di elementi Double
+     * @param list
+     */
+    public void printDoubleList(ArrayList<Double> list){
+        int i;
+        for(i=0; i<list.size(); i++)
+            System.out.println(list.get(i));
+        System.out.println();
+    }
 
     /**
      * Metodo per stampare le statistiche
@@ -597,6 +610,55 @@ public class Printer {
         FileWriter fw = new FileWriter(file);
 
         int i;
+        for(i=0; i<list.size(); ++i) {
+            fw.write(String.valueOf(list.get(i)));
+            fw.write("\n");
+        }
+        fw.write("\n");
+
+        fw.flush();
+        fw.close();
+    }
+
+
+    public void printEnsembleStat(ArrayList<Double> list, int type, int policy, int algorithm, String statName) throws IOException {
+        String path = "C:\\Users\\Simone\\Desktop\\simulazione_pmcsn\\ensStat\\";
+        String alg;
+
+        int i;
+        /*
+        for(i=1; i<=25; ++i)
+            System.out.println("*TEST IN PRINT - " + statName + " i=" + i + " " + list.get(i-1));
+*/
+        if(algorithm == 1)
+            alg = "alg1";
+        else
+            alg = "alg2";
+
+        if(type == 0) {
+            if (policy == 1)
+                //Creazione di un file vuoto
+                path += "system_" + statName + "_transient_" + alg + ".txt";
+            else
+                path += "system_" + statName + "steady_" + alg + ".txt";
+        }
+        else if(type == 1) {
+            if (policy == 1)
+                path += "clet_" + statName + "_transient_" + alg + ".txt";
+            else
+                path += "clet_" + statName + "_steady_" + alg + ".txt";
+        }
+        else {
+            if (policy == 1)
+                path += "cloud_" + statName + "_transient_" + alg + ".txt";
+            else
+                path += "cloud_" + statName + "_steady_" + alg + ".txt";
+        }
+
+        File file = new File(path);
+        FileWriter fw = new FileWriter(file);
+
+        //int i;
         for(i=0; i<list.size(); ++i) {
             fw.write(String.valueOf(list.get(i)));
             fw.write("\n");
