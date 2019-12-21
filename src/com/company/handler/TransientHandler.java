@@ -92,10 +92,6 @@ public class TransientHandler {
              */
 
             /**
-             * Idea di base: le "roundStat" memorizzano i valori del round, gli "ensStat" i valori dell'ensemble.
-             */
-
-            /**
              * OSS in base a quanto scritto nel cap.8 per calcolare la media dell'ens al denominatore si usa
              * il # di round. Lo calcolo attraverso l'A di Welford come sempre per ottimizzare il calcolo.
              * IDEA: Per evitare l'uso delle strutture "avg" posso definire una lista in "ensCLet/CloudStat"
@@ -119,14 +115,6 @@ public class TransientHandler {
             System.out.println("size test: " + ensCletStat.getConfidenceIntervalList().size());
 */
             //System.out.println("* i=" + i + " " + ensCletStat.getMeanList().get(i-1) + " " + ensCletStat.getConfidenceIntervalList().get(i-1));
-
-            //ensCletStat.getMeanList().add(cletStatistics.getMean());
-            //ensCletStat.getStdDevList().add(cletStatistics.getStdDeviation());
-            //ensCletStat.getConfidenceIntervalList().add(ensCletConfInt);
-
-            //ensCloudStat.getMeanList().add(cloudStatistics.getMean());
-            //ensCloudStat.getStdDevList().add(cloudStatistics.getStdDeviation());
-            //ensCloudStat.getConfidenceIntervalList().add(ensCloudConfInt);
 /*
             avgCletPopulation.get(i).setConfidenceInterval(cletConfInt);
             avgCloudPopulation.get(i).setConfidenceInterval(cloudConfInt);
