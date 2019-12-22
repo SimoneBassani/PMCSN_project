@@ -454,7 +454,7 @@ public class Printer {
     public void printBatchMeanList(int stampa) {
         if (stampa != 0) {
             BatchMeanHandler batchMeanHandler = BatchMeanHandler.getInstance();
-            ArrayList<Double> list = batchMeanHandler.getBatchMeanCletMeans();
+            ArrayList<Double> list = batchMeanHandler.getCletMeanRespTime();
 
             System.out.println("*+*+ BATCH LIST *+*+");
 
@@ -525,8 +525,8 @@ public class Printer {
      * @param algorithm 1 algorithm 1, 2 algorithm 2
      * @throws IOException
      */
-    public void printRoundPopulation(ArrayList<Double> oneRoundPopulation, int type, int policy, int algorithm) throws IOException {
-        String path = "C:\\Users\\Simone\\Desktop\\simulazione_pmcsn\\population\\";
+    public void printRoundPopulation(ArrayList<Double> oneRoundPopulation, int type, int policy, int algorithm, String dir) throws IOException {
+        String path = "C:\\Users\\Simone\\Desktop\\simulazione_pmcsn\\" + dir + "\\";
         String alg;
 
         if(algorithm == 1)
@@ -536,7 +536,6 @@ public class Printer {
 
         if(type == 0) {
             if (policy == 1)
-                //Creazione di un file vuoto
                 path += "system_population_transient_" + alg + ".txt";
             else
                 path += "system_population_steady_" + alg + ".txt";

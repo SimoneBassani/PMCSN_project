@@ -152,8 +152,6 @@ public class TransientHandler {
         System.out.println(ensCletPopStat.getConfidenceIntervalList());
         System.out.println(ensCloudPopStat.getMeanList());
         System.out.println(ensCloudPopStat.getConfidenceIntervalList());
-        //for(i=1; i<=round; ++i)
-        //System.out.println("* i=" + i + " " + ensCletStat.getMeanList().get(i-1) + " " + ensCletStat.getConfidenceIntervalList().get(i-1));
 
         /**
          * Invio le statistiche sul file
@@ -181,6 +179,7 @@ public class TransientHandler {
         printer.printEnsembleStat(ensCloudPopStat.getMeanList(), 2, 1, algType, "mean", "population");
         printer.printEnsembleStat(ensCloudPopStat.getConfidenceIntervalList(), 2, 1, algType, "confInt", "population");
 
+        //TODO cancellare
         /**
          * Scrivo le statistiche sul clet e sul cloud
          */

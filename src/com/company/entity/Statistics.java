@@ -30,6 +30,13 @@ public class Statistics {
         this.stdDeviation = stdDeviation;
     }
 
+    public Statistics(double mean, double variance, double stdDeviation, double confidenceInterval) {
+        this.mean = mean;
+        this.variance = variance;
+        this.stdDeviation = stdDeviation;
+        this.confidenceInterval = confidenceInterval;
+    }
+
     public Statistics(double mean, double variance, double stdDeviation, double totalJob, double totalJob_1,
                       double totalJob_2) {
         this.mean = mean;

@@ -16,7 +16,7 @@ import static java.lang.System.exit;
 
 /**
  * TODO:
- * - controllare int di conf anche per il caso steady-state
+ * - completare raccolta valori steady-state. Per il grafico valutare se prendere un sottoinsieme di punti
  * - studiare anche il tempo di risposta medio per ogni round? Capirne l'utilità
  * - controllare il thr
  * - decidere la versione della gestione dei job interrotti

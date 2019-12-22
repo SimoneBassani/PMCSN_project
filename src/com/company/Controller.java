@@ -46,10 +46,6 @@ public class Controller {
      */
     public void runAlgorithm1(Statistics cletStatistics, Statistics cloudStatistics) throws IOException {
 
-/*
-        System.out.println("round: " + round);
-        System.out.println("init: " + init);
-*/
         //BatchMeanHandler batchMeanHandler = new BatchMeanHandler();
         BatchMeanHandler batchMeanHandler = BatchMeanHandler.getInstance();
 
@@ -94,6 +90,10 @@ public class Controller {
         long cloudBatchCount = 0;
 
         int dimList = n+2;  //dimensione lista eventi arrivo + clet
+
+        double alpha = configuration.getAlpha();
+
+        int cont=0;
 
         /**
          * Liste utilizzate per salvare le statistiche relative alla popolazione media
@@ -321,17 +321,32 @@ public class Controller {
                     }else{
                         //todo va effettuata l'analisi di batch misti per le stat di sistema?
                         /**
-                         * Se ho analizzato b-elementi, ho un batch completo e posso riazzerare il contatore e procedere
-                         * con il calcolo della media del batch.
-                         * Il valore calcolato viene aggiunto alla lista nel batchMeanHandler
+                         * Uso le liste cletBatchStats e cloudBatchStats per calcolare dinamicamente media e varianza per il batch.
+                         * Una volta ottenuto un batch completo la media e l'int di conf vengono salvati in una lista in cletStats e
+                         * cloudStats.
+                         * Fuori dal Controller uso le liste delle medie dei vari batch per calcolare la media delle medie e un int. di conf.
                          */
-                        statisticsHandler.computeMeanAndStdDeviation(cletBatchStats, cletBatchCount, events.get(e).getExecutionTime());
+                        // calcolo la media con l'A di Welford
+                        //statisticsHandler.computeMeanAndStdDeviation(cletBatchStats, cletBatchCount, events.get(e).getExecutionTime());
+                        batchMeanHandler.computeMeanForBatchMean(cletBatchStats, cletBatchCount, events.get(e).getExecutionTime(), alpha);
 
+                        //se ho un batch completo salvo la media ottenuta nella lista batchMeanCletMeans
                         if (cletBatchCount == batchSize) {
 
-                            double batchMean = cletBatchStats.getMean();    //media del batch
-                            batchMeanHandler.getBatchMeanCletMeans().add(batchMean);    //la aggiungo alla lista getBatch
+                            cont ++;
+                            //System.out.println("### cont = " + cont);
 
+                            batchMeanHandler.storeStatsForBatch(cletStatistics, cletBatchStats);
+
+                            cletBatchCount = 0;
+                            cletBatchStats = new Statistics(0, 0, 0, 0);
+/*
+                            double batchMean = cletBatchStats.getMean();    //media del batch
+                            batchMeanHandler.getCletMeanRespTime().add(batchMean);    //la aggiungo alla lista getBatch
+
+                            double confInt = batchMeanHandler.computeConfidenceIntervalEstimate(cletBatchStats, alpha, batchSize);
+                            batchMeanHandler.getCletRespTimeConfInt().add(confInt);
+                            */
                             //System.out.println("batch-mean: " + batchMean);
 
                             //todo per calcolarlo statisticamente va spostato qui
@@ -346,15 +361,18 @@ public class Controller {
                             /**
                              * Calcolo la popolazione media del batch e aggiorno la lista
                              */
+                            /*
                             statisticsHandler.updateNodeStatistics(time, events, sums, n, jobProcessed, jobProcessedClet,
                                     jobArrived, area, areaClet, areaClet1, areaClet2, oneRoundPopulation_clet);
-
+*/
                             //todo test thr
                             /*
                             printer.printJobStat(jobInSystem, jobInClet, jobInClet_1, jobInClet_2, jobInCloud, jobInCloud_1, jobInCloud_2,
                                     jobOutSystem, jobOutClet, jobOutClet_1, jobOutClet_2, jobOutCloud, jobOutCloud_1, jobOutCloud_2, time);
                             */
-                            cletBatchCount = 0;
+
+                            // per iniziare un nuovo batch annullo i valori che contiene e il relativo contatore
+                            //cletBatchStats.setConfidenceInterval(0.0);
                             //cletBatchStats = new Statistics(0, 0, 0);
                         }
                     }
@@ -395,12 +413,15 @@ public class Controller {
                     if(policy == 1)
                         statisticsHandler.computeMeanAndStdDeviation(cloudStatistics, jobProcessedCloud, events.get(e).getExecutionTime());
                     else{
-                        statisticsHandler.computeMeanAndStdDeviation(cloudBatchStats, cloudBatchCount, events.get(e).getExecutionTime());
+                        //statisticsHandler.computeMeanAndStdDeviation(cloudBatchStats, cloudBatchCount, events.get(e).getExecutionTime());
+                        batchMeanHandler.computeMeanForBatchMean(cloudBatchStats, cloudBatchCount, events.get(e).getExecutionTime(), alpha);
 
                         if(cloudBatchCount == batchSize){
 
-                            double batchMean = cloudBatchStats.getMean();
-                            batchMeanHandler.getBatchMeanCloudMeans().add(batchMean);
+                            batchMeanHandler.storeStatsForBatch(cloudStatistics, cloudBatchStats);
+
+                            //double batchMean = cloudBatchStats.getMean();
+                            //batchMeanHandler.getCloudMeanRespTime().add(batchMean);
                             //System.out.println("batch-mean: " + batchMean);
 
                             //todo per calcolarlo staticamente va spostato qui
@@ -423,6 +444,7 @@ public class Controller {
                                     jobOutSystem, jobOutClet, jobOutClet_1, jobOutClet_2, jobOutCloud, jobOutCloud_1, jobOutCloud_2, time);
                             */
                             cloudBatchCount = 0;
+                            cloudBatchStats = new Statistics(0, 0, 0, 0);
                         }
                     }
 
@@ -470,13 +492,15 @@ public class Controller {
          */
         if(policy == 2) {
             //printer.printBatchMeanList(0);
-            batchMeanHandler.computeMeanForBatchMean(cletStatistics, batchMeanHandler.getBatchMeanCletMeans());
-            batchMeanHandler.computeMeanForBatchMean(cloudStatistics, batchMeanHandler.getBatchMeanCloudMeans());
+            /*
+            batchMeanHandler.computeMeanForBatchMean(cletStatistics, batchMeanHandler.getCletMeanRespTime(), alpha);
+            batchMeanHandler.computeMeanForBatchMean(cloudStatistics, batchMeanHandler.getCloudMeanRespTime(), alpha);
+*/
+            printer.printEnsembleStat(cletStatistics.getMeanList(),1, 2, 1, "mean", "ensStat");
+            printer.printEnsembleStat(cletStatistics.getConfidenceIntervalList(), 1, 2, 1, "confInt", "ensStat");
 
-            //TODO risolvere nuovo percorso file di out
-
-            printer.printRoundPopulation(oneRoundPopulation_clet, 1, policy, 1);
-            printer.printRoundPopulation(oneRoundPopulation_cloud, 2, policy, 1);
+            printer.printEnsembleStat(cloudStatistics.getMeanList(),2, 2, 1, "mean", "ensStat");
+            printer.printEnsembleStat(cloudStatistics.getConfidenceIntervalList(), 2, 2, 1, "confInt", "ensStat");
         }
 
         round = round+2;
@@ -528,6 +552,9 @@ public class Controller {
         long cloudBatchCount = 0;
 
         int algorithm = 2;
+        double alpha = configuration.getAlpha();
+
+        int cont = 0;
 
         /**
          * ArrayList per mantenere le info statistiche relative ai job spostati a seguito di un'interruzione nel cloudlet
@@ -866,15 +893,24 @@ public class Controller {
                          * con il calcolo della media del batch.
                          * Il valore calcolato viene aggiunto alla lista nel batchMeanHandler
                          */
-                        statisticsHandler.computeMeanAndStdDeviation(cletBatchStats, cletBatchCount, events.get(e).getExecutionTime());
+                        //statisticsHandler.computeMeanAndStdDeviation(cletBatchStats, cletBatchCount, events.get(e).getExecutionTime());
+                        batchMeanHandler.computeMeanForBatchMean(cletBatchStats, cletBatchCount, events.get(e).getExecutionTime(), alpha);
+
 
                         if (cletBatchCount == batchSize) {
 
+                            cont ++;
+                            //System.out.println("### cont = " + cont);
+/*
                             double batchMean = cletBatchStats.getMean();    //media del batch
-                            batchMeanHandler.getBatchMeanCletMeans().add(batchMean);    //la aggiungo alla lista getBatch
+                            batchMeanHandler.getCletMeanRespTime().add(batchMean);    //la aggiungo alla lista getBatch
 
                             System.out.println("batch-mean: " + batchMean);
+*/
+                            batchMeanHandler.storeStatsForBatch(cletStatistics, cletBatchStats);
 
+                            cletBatchCount = 0;
+                            cletBatchStats = new Statistics(0, 0, 0, 0);
                             //todo per calcolarlo statisticamente va spostato qui
 
                             //todo TEST CALCOLO MEDIA STEADY-STATE. La dev std è una media delle dev. std dei vari batch o la calcolo così?
@@ -945,14 +981,17 @@ public class Controller {
                     if (policy == 1)
                         statisticsHandler.computeMeanAndStdDeviation(cloudStatistics, jobProcessedCloud, events.get(e).getExecutionTime());
                     else {
-                        statisticsHandler.computeMeanAndStdDeviation(cloudBatchStats, cloudBatchCount, events.get(e).getExecutionTime());
+                        //statisticsHandler.computeMeanAndStdDeviation(cloudBatchStats, cloudBatchCount, events.get(e).getExecutionTime());
+                        batchMeanHandler.computeMeanForBatchMean(cloudBatchStats, cloudBatchCount, events.get(e).getExecutionTime(), alpha);
 
                         if (cloudBatchCount == batchSize) {
 
+                            batchMeanHandler.storeStatsForBatch(cloudStatistics, cloudBatchStats);
+/*
                             double batchMean = cloudBatchStats.getMean();
-                            batchMeanHandler.getBatchMeanCloudMeans().add(batchMean);
+                            batchMeanHandler.getCloudMeanRespTime().add(batchMean);
                             System.out.println("batch-mean: " + batchMean);
-
+*/
                             //todo per calcolarlo staticamente va spostato qui
 
                             //todo TEST CALCOLO MEDIA STEADY-STATE. La dev std è una media delle dev. std dei vari batch o la calcolo così?
@@ -968,6 +1007,7 @@ public class Controller {
                                     jobArrived, area, areaCloud, areaCloud1, areaCloud2, oneRoundPopulation_cloud);
 
                             cloudBatchCount = 0;
+                            cloudBatchStats = new Statistics(0, 0, 0, 0);
                         }
                     }
 
@@ -1007,11 +1047,21 @@ public class Controller {
          */
         if (policy == 2) {
             //printer.printBatchMeanList(0);
-            batchMeanHandler.computeMeanForBatchMean(cletStatistics, batchMeanHandler.getBatchMeanCletMeans());
-            batchMeanHandler.computeMeanForBatchMean(cloudStatistics, batchMeanHandler.getBatchMeanCloudMeans());
-
+            /*
+            batchMeanHandler.computeMeanForBatchMean(cletStatistics, batchMeanHandler.getCletMeanRespTime());
+            batchMeanHandler.computeMeanForBatchMean(cloudStatistics, batchMeanHandler.getCloudMeanRespTime());
+            */
+            //TODO aggiungere parametro
+/*
             printer.printRoundPopulation(oneRoundPopulation_clet, 1, policy, algorithm);
             printer.printRoundPopulation(oneRoundPopulation_cloud, 2, policy, algorithm);
+            */
+            printer.printEnsembleStat(cletStatistics.getMeanList(),1, 2, 2, "mean", "ensStat");
+            printer.printEnsembleStat(cletStatistics.getConfidenceIntervalList(), 1, 2, 2, "confInt", "ensStat");
+
+            printer.printEnsembleStat(cloudStatistics.getMeanList(),2, 2, 2, "mean", "ensStat");
+            printer.printEnsembleStat(cloudStatistics.getConfidenceIntervalList(), 2, 2, 2, "confInt", "ensStat");
+
         }
 
         printer.printThr(cletThr_1, 1, algorithm, policy, 1);

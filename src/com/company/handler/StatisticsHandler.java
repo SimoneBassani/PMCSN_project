@@ -187,19 +187,16 @@ public class StatisticsHandler {
      * @param cletStatistics
      * @param cloudStatistics
      * @param alpha
-     * todo nel calcolo dell'int.di conf è giusto usare la dimensione della lista (cioè il # di batch) ?
      */
     public void printSteadyStateStats(Statistics cletStatistics, Statistics cloudStatistics, double alpha) {
         BatchMeanHandler batchMeanHandler = BatchMeanHandler.getInstance();
 
-        System.out.println("\nclet \nmean: " + cletStatistics.getMean() + "\nvar: " + cletStatistics.getVariance());
-        computeConfidenceIntervalEstimate(cletStatistics, alpha, batchMeanHandler.getBatchMeanCletMeans().size());
+        System.out.println("\nclet \nmean: " + cletStatistics.getMean());
         double cletConfInt = cletStatistics.getConfidenceInterval();
         System.out.println("int di conf: " + (cletStatistics.getMean() - cletConfInt) + ", " +
                 (cletStatistics.getMean() + cletConfInt));
 
-        System.out.println("\ncloud \nmean: " + cloudStatistics.getMean() + "\nvar: " + cloudStatistics.getVariance());
-        computeConfidenceIntervalEstimate(cloudStatistics, alpha, batchMeanHandler.getBatchMeanCloudMeans().size());
+        System.out.println("\ncloud \nmean: " + cloudStatistics.getMean());
         double cloudConfInt = cloudStatistics.getConfidenceInterval();
         System.out.println("int di conf: " + (cloudStatistics.getMean() - cloudConfInt) + ", " +
                 (cloudStatistics.getMean() + cloudConfInt));
