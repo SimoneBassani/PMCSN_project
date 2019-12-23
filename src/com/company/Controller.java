@@ -981,24 +981,11 @@ public class Controller {
                     if (policy == 1)
                         statisticsHandler.computeMeanAndStdDeviation(cloudStatistics, jobProcessedCloud, events.get(e).getExecutionTime());
                     else {
-                        //statisticsHandler.computeMeanAndStdDeviation(cloudBatchStats, cloudBatchCount, events.get(e).getExecutionTime());
                         batchMeanHandler.computeMeanForBatchMean(cloudBatchStats, cloudBatchCount, events.get(e).getExecutionTime(), alpha);
 
                         if (cloudBatchCount == batchSize) {
 
                             batchMeanHandler.storeStatsForBatch(cloudStatistics, cloudBatchStats);
-/*
-                            double batchMean = cloudBatchStats.getMean();
-                            batchMeanHandler.getCloudMeanRespTime().add(batchMean);
-                            System.out.println("batch-mean: " + batchMean);
-*/
-                            //todo per calcolarlo staticamente va spostato qui
-
-                            //todo TEST CALCOLO MEDIA STEADY-STATE. La dev std è una media delle dev. std dei vari batch o la calcolo così?
-                            /*
-                            statisticsHandler.computeMeanAndStdDeviation(cloudStatistics,
-                                    batchMeanHandler.getBatchMeanCloudMeans().size(), batchMean);
-                            */
 
                             /**
                              * Calcolo la popolazione media per ogni batch, quindi le scrivo su file
@@ -1046,16 +1033,6 @@ public class Controller {
          * Adesso ogni lista dei batch ha le medie di ogni batch. Posso calcolare la media della statistica
          */
         if (policy == 2) {
-            //printer.printBatchMeanList(0);
-            /*
-            batchMeanHandler.computeMeanForBatchMean(cletStatistics, batchMeanHandler.getCletMeanRespTime());
-            batchMeanHandler.computeMeanForBatchMean(cloudStatistics, batchMeanHandler.getCloudMeanRespTime());
-            */
-            //TODO aggiungere parametro
-/*
-            printer.printRoundPopulation(oneRoundPopulation_clet, 1, policy, algorithm);
-            printer.printRoundPopulation(oneRoundPopulation_cloud, 2, policy, algorithm);
-            */
             printer.printEnsembleStat(cletStatistics.getMeanList(),1, 2, 2, "mean", "ensStat");
             printer.printEnsembleStat(cletStatistics.getConfidenceIntervalList(), 1, 2, 2, "confInt", "ensStat");
 
