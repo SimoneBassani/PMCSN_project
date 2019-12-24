@@ -1,7 +1,10 @@
 package com.company.handler;
 
 import com.company.Controller;
+import com.company.entity.Event;
 import com.company.entity.Statistics;
+import com.company.entity.Sum;
+import com.company.entity.SystemTime;
 import com.company.utility.Rvms;
 
 import java.io.IOException;
@@ -30,6 +33,13 @@ public class BatchMeanHandler {
     private ArrayList<Double> cletRespTimeConfInt = new ArrayList<>();
     private ArrayList<Double> cloudRespTimeConfInt = new ArrayList<>();
 
+    private ArrayList<Double> cletMeanPopulation = new ArrayList<Double>();
+    private ArrayList<Double> cloudMeanPopulation = new ArrayList<Double>();
+    private ArrayList<Double> cletPopulationConfInt = new ArrayList<>();
+    private ArrayList<Double> cloudPopulationConfInt = new ArrayList<>();
+    //todo servono liste per job 1 e 2
+
+    private ArrayList<Double> thrSystem = new ArrayList<>();
 
     public static BatchMeanHandler getSingle_instance() {
         return single_instance;
@@ -71,6 +81,29 @@ public class BatchMeanHandler {
         this.cloudRespTimeConfInt = cloudRespTimeConfInt;
     }
 
+    public ArrayList<Double> getCletMeanPopulation() { return cletMeanPopulation; }
+
+    public void setCletMeanPopulation(ArrayList<Double> cletMeanPopulation) {
+        this.cletMeanPopulation = cletMeanPopulation;
+    }
+
+    public ArrayList<Double> getCloudMeanPopulation() { return cloudMeanPopulation; }
+
+    public void setCloudMeanPopulation(ArrayList<Double> cloudMeanPopulation) {
+        this.cloudMeanPopulation = cloudMeanPopulation;
+    }
+
+    public ArrayList<Double> getCletPopulationConfInt() { return cletPopulationConfInt; }
+
+    public void setCletPopulationConfInt(ArrayList<Double> cletPopulationConfInt) {
+        this.cletPopulationConfInt = cletPopulationConfInt;
+    }
+
+    public ArrayList<Double> getCloudPopulationConfInt() { return cloudPopulationConfInt; }
+
+    public void setCloudPopulationConfInt(ArrayList<Double> cloudPopulationConfInt) {
+        this.cloudPopulationConfInt = cloudPopulationConfInt;
+    }
 
     /**
      * Ho un batch completo. Calcolo l'intervallo di confidenza con la media e la var salvata nell'oggetto Statistics
@@ -112,38 +145,7 @@ public class BatchMeanHandler {
      */
     public void computeMeanForBatchMean(Statistics statistics, long n, double x, double alpha){
 
-        //todo test calcolo int di conf V valore intermedio
-        /*
-
-        double mean = 0.0;
-        double variance = 0.0;
-        double stdDev;
-        int i;
-
-        ArrayList<Double> means = new ArrayList<>();
-        ArrayList<Double> var = new ArrayList<>();
-*/
-
-        // calcolo la media delle medie dei vari batch
-        /*
-        for(i=0; i<n; i++) {
-            //System.out.println(batchMeanCletMeans.get(i));
-            mean += list.get(i);
-        }
-
-        mean = mean / n;
-        //System.out.println("mean: " + mean);
-
-        for(i=0; i<n; i++){
-            variance += pow((list.get(i) - mean), 2);
-        }
-        variance = variance / (list.size() - 1);
-
-        stdDev = pow(variance, 0.5);
-
-        statistics.setMean(mean);
-        statistics.setStdDeviation(stdDev);
-        */
+        //todo test calcolo int di conf V valore intermedio ?
 
         double mean = statistics.getMean();
         double variance = statistics.getVariance();
@@ -215,6 +217,7 @@ public class BatchMeanHandler {
 
         System.out.println("\n+++ STEADY-STATE STATS +++");
 
+        //cletStat e cloudStat contengono le liste con i valori dei vari round/batch, quindi ne calcolo la "mean of means"
         batchMeanHandler.computeMeanOfMeans(cletStatistics, alpha);
         batchMeanHandler.computeMeanOfMeans(cloudStatistics, alpha);
         statisticsHandler.printSteadyStateStats(cletStatistics, cloudStatistics, alpha);
@@ -222,28 +225,29 @@ public class BatchMeanHandler {
 
 
     /**
-     * Calcolo la media delle varie medie calcolate per i batch e il relativo intervallo di confidenza
-     * @param statistics
+     * Scorre un array list di medie e calcola la "mean of means" e il relativo int. di conf.
+     * @param meanList
      * @param alpha
+     * @return
      */
-    private void computeMeanOfMeans(Statistics statistics, double alpha) {
+    public ArrayList<Double> computeMean(ArrayList<Double> meanList, double alpha){
         double mean = 0;
         double variance = 0;
 
-        int n = statistics.getMeanList().size();
+        int n = meanList.size();
 
         int i;
         // calcolo la media delle medie dei vari batch
         for(i=0; i<n; i++) {
             //System.out.println(batchMeanCletMeans.get(i));
-            mean += statistics.getMeanList().get(i);
+            mean += meanList.get(i);
         }
 
         mean = mean / n;
         //System.out.println("mean: " + mean);
 
         for(i=0; i<n; i++){
-            variance += pow((statistics.getMeanList().get(i) - mean), 2);
+            variance += pow((meanList.get(i) - mean), 2);
         }
         variance = variance / (n - 1);
 
@@ -254,7 +258,69 @@ public class BatchMeanHandler {
         double criticalValue = rvms.idfStudent((n - 1), 1 - (alpha / 2));
         double confInt = (criticalValue * stdDev) / Math.sqrt(n - 1);
 
-        statistics.setMean(mean);
-        statistics.setConfidenceInterval(confInt);
+        ArrayList<Double> results = new ArrayList<>();
+        results.add(mean);
+        results.add(confInt);
+
+        return results;
+    }
+
+
+    /**
+     * Calcolo la "mean of means" calcolate per i batch e il relativo intervallo di confidenza
+     * @param statistics
+     * @param alpha
+     */
+    public void computeMeanOfMeans(Statistics statistics, double alpha) {
+
+        ArrayList <Double> stats = new ArrayList<>();
+
+        // RESP TIME
+        stats = computeMean(statistics.getMeanList(), alpha);
+        statistics.setMean(stats.get(0));
+        statistics.setConfidenceInterval(stats.get(1));
+
+        // POP
+        stats = computeMean(statistics.getPopulationMeanList(), alpha);
+        statistics.setPopulationMean(stats.get(0));
+        statistics.setPopulationConfInt(stats.get(1));
+
+        // THR
+        stats = computeMean(statistics.getThrMeanList(), alpha);
+        statistics.setThrMean(stats.get(0));
+        statistics.setThrConfInt(stats.get(1));
+
+        stats = computeMean(statistics.getThrMeanList_1(), alpha);
+        statistics.setThrMean_1(stats.get(0));
+        statistics.setThrConfInt_1(stats.get(1));
+
+        stats = computeMean(statistics.getThrMeanList_2(), alpha);
+        statistics.setThrMean_2(stats.get(0));
+        statistics.setThrConfInt_2(stats.get(1));
+    }
+
+    public void updateBatchStatistics(SystemTime time, ArrayList<Event> events, ArrayList<Sum> sums, int n,
+                                      long jobProcessed, long jobProcessedCloud, long jobArrived, double area,
+                                      double areaNode, double area1, double area2, double jobOut, double jobOut_1,
+                                      double jobOut_2, int node, Statistics statistics, Statistics batchStatistics) {
+
+        // TEMPO DI RISPOSTA
+        statistics.getMeanList().add(batchStatistics.getMean());
+        statistics.getConfidenceIntervalList().add(batchStatistics.getConfidenceInterval());
+
+        // POPOLAZIONE
+        //todo aggiungere liste per pop1 e pop2
+        double job = area / time.getCurrent();
+
+        //job presenti nel nodo
+        double job1Node = area1 / time.getCurrent();
+        double job2Node = area2 / time.getCurrent();
+
+        statistics.getPopulationMeanList().add(areaNode / time.getCurrent());
+
+        // THR
+        statistics.getThrMeanList().add(jobOut/time.getCurrent());
+        statistics.getThrMeanList_1().add(jobOut_1/time.getCurrent());
+        statistics.getThrMeanList_2().add(jobOut_2/time.getCurrent());
     }
 }

@@ -494,13 +494,14 @@ public class Printer {
      * @param jobOutCloud_1
      * @param jobOutCloud_2
      */
-    public void printJobStat(long jobInSystem, long jobInSystem_1, long jobInSystem_2, long jobInClet, long jobInClet_1,
-                             long jobInClet_2, long jobInCloud, long jobInCloud_1, long jobInCloud_2, long jobOutSystem,
-                             long jobOutSystem_1, long jobOutSystem_2, long jobOutClet, long jobOutClet_1,
+    //todo ho cancellato dei job passati come parametro. jobinsystem1 e jobinsystem2 per es
+    public void printJobStat(long jobInSystem, long jobInClet, long jobInClet_1, long jobInClet_2, long jobInCloud,
+                             long jobInCloud_1, long jobInCloud_2, long jobOutSystem, long jobOutClet, long jobOutClet_1,
                              long jobOutClet_2, long jobOutCloud, long jobOutCloud_1, long jobOutCloud_2, SystemTime time) {
 
-        System.out.println("# OF JOBS:\n - in system: " + jobInSystem + "\n - 1 in system: " + jobInSystem_1 +
-                "\n - 2 in system: " + jobInSystem_2 + "\n - in clet: " + jobInClet +
+        System.out.println("# OF JOBS:\n - in system: " + jobInSystem +
+                //"\n - 1 in system: " + jobInSystem_1 + "\n - 2 in system: " + jobInSystem_2 +
+                "\n - in clet: " + jobInClet +
                 "\n - 1 in clet: " + jobInClet_1 + "\n - 2 in clet: " + jobInClet_2 + "\n - in cloud: " +
                 jobInCloud + "\n - 1 in cloud: " + jobInCloud_1 + "\n - 2 in cloud: " + jobInCloud_2 +
                 "\n - out of systme: " + jobOutSystem + "\n - out clet: " + jobOutClet + "\n - 1 out clet: " +
@@ -509,9 +510,9 @@ public class Printer {
 
         double currentTime = time.getCurrent();
 
-        System.out.println("\nTHROUGHPUT:\n - system: " + jobOutSystem/currentTime + "\n - system job1: " +
-                jobOutSystem_1/currentTime + "\n - system job2: " + jobOutSystem_2/currentTime + "\n - clet: " +
-                jobOutClet/currentTime + "\n - clet job1: " + jobOutClet_1/currentTime + "\n - clet job2: " +
+        System.out.println("\nTHROUGHPUT:\n - system: " + jobOutSystem/currentTime +
+                //"\n - system job1: " + jobOutSystem_1/currentTime + "\n - system job2: " + jobOutSystem_2/currentTime +
+                "\n - clet: " + jobOutClet/currentTime + "\n - clet job1: " + jobOutClet_1/currentTime + "\n - clet job2: " +
                 jobOutClet_2/currentTime + "\n - cloud: " + jobOutCloud/time.getCurrent() + "\n - cloud job1: " +
                 jobOutCloud_1/currentTime + "\n - cloud job2: " + jobOutCloud_2/currentTime);
     }
