@@ -16,9 +16,8 @@ import static java.lang.System.exit;
 
 /**
  * TODO:
- * - completare raccolta valori steady-state. Per il grafico valutare se prendere un sottoinsieme di punti
+ * - completare raccolta valori steady-state. T[risp] classe 1 non torna
  * - studiare anche il tempo di risposta medio per ogni round? Capirne l'utilità
- * - controllare il thr
  * - decidere la versione della gestione dei job interrotti
  */
 public class Main {

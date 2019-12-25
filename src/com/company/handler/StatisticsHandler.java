@@ -166,13 +166,28 @@ public class StatisticsHandler {
 
         //CLET
         double cletRespMean = cletStatistics.getMean();
+        double cletRespMean_1 = cletStatistics.getMean_1();
+        double cletRespMean_2 = cletStatistics.getMean_2();
         double cletRespConfInt = cletStatistics.getConfidenceInterval();
+        /*
+        double cletRespConfInt_1 = cletStatistics.getConfidenceInterval_1();
+        double cletRespConfInt_2 = cletStatistics.getConfidenceInterval_2();
+        */
         System.out.println("\nCLET");
         System.out.println("Response time");
         System.out.println("total");
         System.out.println("    - mean: " + cletRespMean);
         System.out.println("    - int di conf: " + (cletRespMean - cletRespConfInt) + ", " +
                 (cletRespMean + cletRespConfInt));
+
+        System.out.println("- class 1");
+        System.out.println("    - mean: " + cletRespMean_1);
+        //System.out.println("    - int di conf: " + (cletRespMean_1 - cletRespConfInt_1) + ", " +
+         //       (cletRespMean_1 + cletRespConfInt_1));
+        System.out.println("- class 2");
+        System.out.println("    - mean: " + cletRespMean_2);
+        //System.out.println("    - int di conf: " + (cletRespMean_2 - cletRespConfInt_2) + ", " +
+          //      (cletRespMean_2 + cletRespConfInt_2));
 
         double cletPopMean = cletStatistics.getPopulationMean();
         double cletPopConfInt = cletStatistics.getPopulationConfInt();
@@ -194,23 +209,37 @@ public class StatisticsHandler {
         System.out.println("    - conf int: " + (cletThrMean - cletThrConfInt) + ", " +
                 (cletThrMean + cletThrConfInt));
         System.out.println("- class 1");
-        System.out.println("    - mean 1: " + cletThrMean_1);
-        System.out.println("    - conf int 1: " + (cletThrMean_1 - cletThrConfInt_1) + ", " +
+        System.out.println("    - mean: " + cletThrMean_1);
+        System.out.println("    - conf int: " + (cletThrMean_1 - cletThrConfInt_1) + ", " +
                 (cletThrMean_1 + cletThrConfInt_1));
         System.out.println("- class 2");
-        System.out.println("    - mean 2: " + cletThrMean_2);
-        System.out.println("    - conf int 2: " + (cletThrMean_2 - cletThrConfInt_2) + ", " +
+        System.out.println("    - mean: " + cletThrMean_2);
+        System.out.println("    - conf int: " + (cletThrMean_2 - cletThrConfInt_2) + ", " +
                 (cletThrMean_2 + cletThrConfInt_2));
 
         // CLOUD
         double cloudRespMean = cloudStatistics.getMean();
+        double cloudRespMean_1 = cloudStatistics.getMean_1();
+        double cloudRespMean_2 = cloudStatistics.getMean_2();
         double cloudRespConfInt = cloudStatistics.getConfidenceInterval();
+        /*
+        double cloudRespConfInt_1 = cloudStatistics.getConfidenceInterval_1();
+        double cloudRespConfInt_2 = cloudStatistics.getConfidenceInterval_2();
+        */
         System.out.println("\nCLOUD");
         System.out.println("Response time:");
         System.out.println("total");
         System.out.println("    - mean: " + cloudRespMean);
         System.out.println("    - conf int: " + (cloudRespMean - cloudRespConfInt) + ", " +
                 (cloudRespMean + cloudRespConfInt));
+        System.out.println("- class 1");
+        System.out.println("    - mean: " + cloudRespMean_1);
+        //System.out.println("    - int di conf: " + (cloudRespMean_1 - cloudRespConfInt_1) + ", " +
+        //        (cloudRespMean_1 + cloudRespConfInt_1));
+        System.out.println("- class 2");
+        System.out.println("    - mean: " + cloudRespMean_2);
+        //System.out.println("    - int di conf: " + (cloudRespMean_2 - cloudRespConfInt_2) + ", " +
+        //        (cloudRespMean_2 + cloudRespConfInt_2));
 
         double cloudPopMean = cloudStatistics.getPopulationMean();
         double cloudPopConfInt = cloudStatistics.getPopulationConfInt();
@@ -232,12 +261,12 @@ public class StatisticsHandler {
         System.out.println("    - conf int: " + (cloudThrMean - cloudThrConfInt) + ", " +
                 (cloudThrMean + cloudThrConfInt));
         System.out.println("- class 1");
-        System.out.println("    - mean 1: " + cloudThrMean_1);
-        System.out.println("    - conf int 1: " + (cloudThrMean_1 - cloudThrConfInt_1) + ", " +
+        System.out.println("    - mean: " + cloudThrMean_1);
+        System.out.println("    - conf int: " + (cloudThrMean_1 - cloudThrConfInt_1) + ", " +
                 (cloudThrMean_1 + cloudThrConfInt_1));
         System.out.println("- class 2");
-        System.out.println("    - mean 2: " + cloudThrMean_2);
-        System.out.println("    - conf int 2: " + (cloudThrMean_2 - cloudThrConfInt_2) + ", " +
+        System.out.println("    - mean: " + cloudThrMean_2);
+        System.out.println("    - conf int: " + (cloudThrMean_2 - cloudThrConfInt_2) + ", " +
                 (cloudThrMean_2 + cloudThrConfInt_2));
     }
 

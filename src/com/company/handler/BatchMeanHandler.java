@@ -144,9 +144,6 @@ public class BatchMeanHandler {
      * @param statistics
      */
     public void computeMeanForBatchMean(Statistics statistics, long n, double x, double alpha){
-
-        //todo test calcolo int di conf V valore intermedio ?
-
         double mean = statistics.getMean();
         double variance = statistics.getVariance();
 
@@ -172,6 +169,7 @@ public class BatchMeanHandler {
         statistics.setVariance(variance);
         statistics.setStdDeviation(stdDev);
         statistics.setConfidenceInterval(confInt);
+
     }
 
 
@@ -261,6 +259,7 @@ public class BatchMeanHandler {
         ArrayList<Double> results = new ArrayList<>();
         results.add(mean);
         results.add(confInt);
+        results.add(variance);
 
         return results;
     }
@@ -279,6 +278,14 @@ public class BatchMeanHandler {
         stats = computeMean(statistics.getMeanList(), alpha);
         statistics.setMean(stats.get(0));
         statistics.setConfidenceInterval(stats.get(1));
+
+        stats = computeMean(statistics.getMeanList_1(), alpha);
+        statistics.setMean_1(stats.get(0));
+        //statistics.setConfidenceIntervalList_1(stats.get(1));
+
+        stats = computeMean(statistics.getMeanList_2(), alpha);
+        statistics.setMean_2(stats.get(0));
+        //statistics.setConfidenceInterval_2(stats.get(1));
 
         // POP
         stats = computeMean(statistics.getPopulationMeanList(), alpha);
@@ -302,25 +309,44 @@ public class BatchMeanHandler {
     public void updateBatchStatistics(SystemTime time, ArrayList<Event> events, ArrayList<Sum> sums, int n,
                                       long jobProcessed, long jobProcessedCloud, long jobArrived, double area,
                                       double areaNode, double area1, double area2, double jobOut, double jobOut_1,
-                                      double jobOut_2, int node, Statistics statistics, Statistics batchStatistics) {
+                                      double jobOut_2, int node, Statistics statistics, Statistics batchStatistics,
+                                      Statistics batchStatistics_1, Statistics batchStatistics_2) {
 
         // TEMPO DI RISPOSTA
         statistics.getMeanList().add(batchStatistics.getMean());
         statistics.getConfidenceIntervalList().add(batchStatistics.getConfidenceInterval());
 
-        // POPOLAZIONE
-        //todo aggiungere liste per pop1 e pop2
-        double job = area / time.getCurrent();
+        statistics.getMeanList_1().add(batchStatistics_1.getMean());
+        statistics.getConfidenceIntervalList_1().add(batchStatistics_1.getConfidenceInterval());
 
+        statistics.getMeanList_2().add(batchStatistics_2.getMean());
+        statistics.getConfidenceIntervalList_2().add(batchStatistics_2.getConfidenceInterval());
+
+        // POPOLAZIONE
+        double job = area / time.getCurrent();
         //job presenti nel nodo
         double job1Node = area1 / time.getCurrent();
         double job2Node = area2 / time.getCurrent();
 
         statistics.getPopulationMeanList().add(areaNode / time.getCurrent());
+        statistics.getPopulationMeanList_1().add(area1 / time.getCurrent());
+        statistics.getPopulationMeanList_2().add(area2 / time.getCurrent());
+        //todo int di conf popolazione
+        /*
+        statistics.getPopulationConfIntList().add();
+        statistics.getPopulationConfIntList_1().add();
+        statistics.getPopulationConfIntList_2().add();
+        */
 
         // THR
         statistics.getThrMeanList().add(jobOut/time.getCurrent());
         statistics.getThrMeanList_1().add(jobOut_1/time.getCurrent());
         statistics.getThrMeanList_2().add(jobOut_2/time.getCurrent());
+        //todo int di conf thr
+        /*
+        statistics.getThrConfIntList();
+        statistics.getThrConfIntList_1().add();
+        statistics.getThrConfIntList_2().add();
+        */
     }
 }

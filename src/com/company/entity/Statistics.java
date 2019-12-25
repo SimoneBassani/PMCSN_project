@@ -12,6 +12,8 @@ public class Statistics {
     private double stdDeviation;
     private double confidenceInterval;
 
+    private double mean_1;
+    private double mean_2;
     //TODO utile?
     private double totalJob;
     private double totalJob_1;
@@ -20,13 +22,25 @@ public class Statistics {
     // statistiche di ogni round. Per le "ensStat" sono quelle utilzzate per ottenere i valori ensemble.
     // Per le "roundStat" sono i valori ottenuti per ogni round
     private ArrayList<Double> meanList = new ArrayList<>();
+    private ArrayList<Double> meanList_1 = new ArrayList<>();
+    private ArrayList<Double> meanList_2 = new ArrayList<>();
     private ArrayList<Double> confidenceIntervalList = new ArrayList<>();
+    private ArrayList<Double> confidenceIntervalList_1 = new ArrayList<>();
+    private ArrayList<Double> confidenceIntervalList_2 = new ArrayList<>();
 
     private double populationMean;
+    private double populationMean_1;
+    private double populationMean_2;
     private double populationConfInt;
+    private double populationConfInt_1;
+    private double populationConfInt_2;
 
     private ArrayList<Double> populationMeanList = new ArrayList<>();
+    private ArrayList<Double> populationMeanList_1 = new ArrayList<>();
+    private ArrayList<Double> populationMeanList_2 = new ArrayList<>();
     private ArrayList<Double> populationConfIntList = new ArrayList<>();
+    private ArrayList<Double> populationConfIntList_1 = new ArrayList<>();
+    private ArrayList<Double> populationConfIntList_2 = new ArrayList<>();
 
     private double thrMean;
     private double thrMean_1;
@@ -138,6 +152,38 @@ public class Statistics {
         this.meanList = meanList;
     }
 
+    public ArrayList<Double> getMeanList_1() {
+        return meanList_1;
+    }
+
+    public void setMeanList_1(ArrayList<Double> meanList_1) {
+        this.meanList_1 = meanList_1;
+    }
+
+    public ArrayList<Double> getMeanList_2() {
+        return meanList_2;
+    }
+
+    public void setMeanList_2(ArrayList<Double> meanList_2) {
+        this.meanList_2 = meanList_2;
+    }
+
+    public ArrayList<Double> getConfidenceIntervalList_1() {
+        return confidenceIntervalList_1;
+    }
+
+    public void setConfidenceIntervalList_1(ArrayList<Double> confidenceIntervalList_1) {
+        this.confidenceIntervalList_1 = confidenceIntervalList_1;
+    }
+
+    public ArrayList<Double> getConfidenceIntervalList_2() {
+        return confidenceIntervalList_2;
+    }
+
+    public void setConfidenceIntervalList_2(ArrayList<Double> confidenceIntervalList_2) {
+        this.confidenceIntervalList_2 = confidenceIntervalList_2;
+    }
+
     //public ArrayList<Double> getStdDevList() {
     // return stdDevList;
     // }
@@ -175,6 +221,70 @@ public class Statistics {
 
     public void setPopulationConfIntList(ArrayList<Double> populationConfIntList) {
         this.populationConfIntList = populationConfIntList;
+    }
+
+    public double getPopulationMean_1() {
+        return populationMean_1;
+    }
+
+    public void setPopulationMean_1(double populationMean_1) {
+        this.populationMean_1 = populationMean_1;
+    }
+
+    public double getPopulationMean_2() {
+        return populationMean_2;
+    }
+
+    public void setPopulationMean_2(double populationMean_2) {
+        this.populationMean_2 = populationMean_2;
+    }
+
+    public double getPopulationConfInt_1() {
+        return populationConfInt_1;
+    }
+
+    public void setPopulationConfInt_1(double populationConfInt_1) {
+        this.populationConfInt_1 = populationConfInt_1;
+    }
+
+    public double getPopulationConfInt_2() {
+        return populationConfInt_2;
+    }
+
+    public void setPopulationConfInt_2(double populationConfInt_2) {
+        this.populationConfInt_2 = populationConfInt_2;
+    }
+
+    public ArrayList<Double> getPopulationMeanList_1() {
+        return populationMeanList_1;
+    }
+
+    public void setPopulationMeanList_1(ArrayList<Double> populationMeanList_1) {
+        this.populationMeanList_1 = populationMeanList_1;
+    }
+
+    public ArrayList<Double> getPopulationMeanList_2() {
+        return populationMeanList_2;
+    }
+
+    public void setPopulationMeanList_2(ArrayList<Double> populationMeanList_2) {
+        this.populationMeanList_2 = populationMeanList_2;
+    }
+
+    public ArrayList<Double> getPopulationConfIntList_1() {
+        return populationConfIntList_1;
+    }
+
+    public void setPopulationConfIntList_1(ArrayList<Double> populationConfIntList_1) {
+        this.populationConfIntList_1 = populationConfIntList_1;
+    }
+
+    public ArrayList<Double> getPopulationConfIntList_2() {
+        return populationConfIntList_2;
+    }
+
+    public void setPopulationConfIntList_2(ArrayList<Double> populationConfIntList_2) {
+        this.populationConfIntList_2 = populationConfIntList_2;
     }
 
     public double getThrMean() {
@@ -271,5 +381,21 @@ public class Statistics {
 
     public void setThrConfIntList_2(ArrayList<Double> thrConfIntList_2) {
         this.thrConfIntList_2 = thrConfIntList_2;
+    }
+
+    public double getMean_1() {
+        return mean_1;
+    }
+
+    public void setMean_1(double mean_1) {
+        this.mean_1 = mean_1;
+    }
+
+    public double getMean_2() {
+        return mean_2;
+    }
+
+    public void setMean_2(double mean_2) {
+        this.mean_2 = mean_2;
     }
 }
