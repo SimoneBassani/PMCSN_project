@@ -108,7 +108,7 @@ public class Printer {
 
                 Event event = events.get(i);
 
-                System.out.println(i + ": status = " + event.getStatus() + "   class index = " + event.getClassIndex() +
+                System.out.println(i + ": status = " + event.getStatus() + "   class index = " + (event.getClassIndex()+1) +
                         "   next time = " + event.getNextTime() + "   location = " + event.getLocation());
             }
             System.out.println(" ");
@@ -568,12 +568,14 @@ public class Printer {
         fw.close();
     }
 
+
     public void printSystemStatus(long jobInSystem, long jobInClet, long jobInClet_1, long jobInClet_2, long jobInCloud,
-                                  long jobInCloud_1, long jobInCloud_2) {
+                                  long jobInCloud_1, long jobInCloud_2, int jobInterrotti) {
 
         System.out.println("\njob in system: " + jobInSystem +
                 "\n job in clet: " + jobInClet + "  job1 in clet: " + jobInClet_1 + "  job2 in clet: " + jobInClet_2 +
-                "\n job in cloud: " + jobInCloud + "  job1 in cloud: " + jobInCloud_1 + "  job2 in cloud: " + jobInCloud_2 + "\n");
+                "\n job in cloud: " + jobInCloud + "  job1 in cloud: " + jobInCloud_1 + "  job2 in cloud: " +
+                jobInCloud_2);
     }
 
 
@@ -668,5 +670,54 @@ public class Printer {
 
         fw.flush();
         fw.close();
+    }
+
+
+
+    public void printSteadyStatsOnFile(Statistics cletStatistics, Statistics cloudStatistics, int alg) throws IOException {
+        //RESPONSE TIME
+        printEnsembleStat(cletStatistics.getMeanList(),1, 2, alg, "mean", "responseTime");
+        printEnsembleStat(cletStatistics.getMeanList_1(),1, 2, alg, "mean_1", "responseTime");
+        printEnsembleStat(cletStatistics.getMeanList_2(),1, 2, alg, "mean_2", "responseTime");
+        printEnsembleStat(cletStatistics.getConfidenceIntervalList(), 1, 2, alg, "confInt", "responseTime");
+        printEnsembleStat(cletStatistics.getConfidenceIntervalList_1(), 1, 2, alg, "confInt_1", "responseTime");
+        printEnsembleStat(cletStatistics.getConfidenceIntervalList_1(), 1, 2, alg, "confInt_2", "responseTime");
+
+        printEnsembleStat(cloudStatistics.getMeanList(),2, 2, alg, "mean", "responseTime");
+        printEnsembleStat(cloudStatistics.getMeanList_1(),2, 2, alg, "mean_1", "responseTime");
+        printEnsembleStat(cloudStatistics.getMeanList_2(),2, 2, alg, "mean_2", "responseTime");
+        printEnsembleStat(cloudStatistics.getConfidenceIntervalList(), 2, 2, alg, "confInt", "responseTime");
+        printEnsembleStat(cloudStatistics.getConfidenceIntervalList_1(), 2, 2, alg, "confInt_1", "responseTime");
+        printEnsembleStat(cloudStatistics.getConfidenceIntervalList_2(), 2, 2, alg, "confInt_2", "responseTime");
+
+        //POPULATION
+        printEnsembleStat(cletStatistics.getPopulationMeanList(),1, 2, alg, "mean", "population");
+        printEnsembleStat(cletStatistics.getPopulationMeanList_1(),1, 2, alg, "mean_1", "population");
+        printEnsembleStat(cletStatistics.getPopulationMeanList_2(),1, 2, alg, "mean_2", "population");
+        printEnsembleStat(cletStatistics.getPopulationConfIntList(), 1, 2, alg, "confInt", "population");
+        printEnsembleStat(cletStatistics.getPopulationConfIntList_1(), 1, 2, alg, "confInt_1", "population");
+        printEnsembleStat(cletStatistics.getPopulationConfIntList_2(), 1, 2, alg, "confInt_2", "population");
+
+        printEnsembleStat(cloudStatistics.getPopulationMeanList(),2, 2, alg, "mean", "population");
+        printEnsembleStat(cloudStatistics.getPopulationMeanList_1(),2, 2, alg, "mean_1", "population");
+        printEnsembleStat(cloudStatistics.getPopulationMeanList_2(),2, 2, alg, "mean_2", "population");
+        printEnsembleStat(cloudStatistics.getPopulationConfIntList(), 2, 2, alg, "confInt", "population");
+        printEnsembleStat(cloudStatistics.getPopulationConfIntList_1(), 2, 2, alg, "confInt_1", "population");
+        printEnsembleStat(cloudStatistics.getPopulationConfIntList_2(), 2, 2, alg, "confInt_2", "population");
+
+        //THR
+        printEnsembleStat(cletStatistics.getThrMeanList(),1, 2, alg, "mean", "thr");
+        printEnsembleStat(cletStatistics.getThrMeanList_1(),1, 2, alg, "mean_1", "thr");
+        printEnsembleStat(cletStatistics.getThrMeanList_2(),1, 2, alg, "mean_2", "thr");
+        printEnsembleStat(cletStatistics.getThrConfIntList(), 1, 2, alg, "confInt", "thr");
+        printEnsembleStat(cletStatistics.getThrConfIntList_1(), 1, 2, alg, "confInt_1", "thr");
+        printEnsembleStat(cletStatistics.getThrConfIntList_2(), 1, 2, alg, "confInt_2", "thr");
+
+        printEnsembleStat(cloudStatistics.getThrMeanList(),2, 2, alg, "mean", "thr");
+        printEnsembleStat(cloudStatistics.getThrMeanList_1(),2, 2, alg, "mean_1", "thr");
+        printEnsembleStat(cloudStatistics.getThrMeanList_2(),2, 2, alg, "mean_2", "thr");
+        printEnsembleStat(cloudStatistics.getThrConfIntList(), 2, 2, alg, "confInt", "thr");
+        printEnsembleStat(cloudStatistics.getThrConfIntList_1(), 2, 2, alg, "confInt_1", "thr");
+        printEnsembleStat(cloudStatistics.getThrConfIntList_2(), 2, 2, alg, "confInt_2", "thr");
     }
 }

@@ -5,6 +5,7 @@ import com.company.entity.Event;
 import com.company.entity.Statistics;
 import com.company.entity.Sum;
 import com.company.entity.SystemTime;
+import com.company.utility.Configuration;
 import com.company.utility.Rvms;
 
 import java.io.IOException;
@@ -272,7 +273,7 @@ public class BatchMeanHandler {
      */
     public void computeMeanOfMeans(Statistics statistics, double alpha) {
 
-        ArrayList <Double> stats = new ArrayList<>();
+        ArrayList <Double> stats;
 
         // RESP TIME
         stats = computeMean(statistics.getMeanList(), alpha);
@@ -281,16 +282,24 @@ public class BatchMeanHandler {
 
         stats = computeMean(statistics.getMeanList_1(), alpha);
         statistics.setMean_1(stats.get(0));
-        //statistics.setConfidenceIntervalList_1(stats.get(1));
+        statistics.setConfidenceInterval_1(stats.get(1));
 
         stats = computeMean(statistics.getMeanList_2(), alpha);
         statistics.setMean_2(stats.get(0));
-        //statistics.setConfidenceInterval_2(stats.get(1));
+        statistics.setConfidenceInterval_2(stats.get(1));
 
         // POP
         stats = computeMean(statistics.getPopulationMeanList(), alpha);
         statistics.setPopulationMean(stats.get(0));
         statistics.setPopulationConfInt(stats.get(1));
+
+        stats = computeMean(statistics.getPopulationMeanList_1(), alpha);
+        statistics.setPopulationMean_1(stats.get(0));
+        statistics.setPopulationConfInt_1(stats.get(1));
+
+        stats = computeMean(statistics.getPopulationMeanList_2(), alpha);
+        statistics.setPopulationMean_2(stats.get(0));
+        statistics.setPopulationConfInt_2(stats.get(1));
 
         // THR
         stats = computeMean(statistics.getThrMeanList(), alpha);
@@ -323,20 +332,24 @@ public class BatchMeanHandler {
         statistics.getConfidenceIntervalList_2().add(batchStatistics_2.getConfidenceInterval());
 
         // POPOLAZIONE
-        double job = area / time.getCurrent();
-        //job presenti nel nodo
-        double job1Node = area1 / time.getCurrent();
-        double job2Node = area2 / time.getCurrent();
-
         statistics.getPopulationMeanList().add(areaNode / time.getCurrent());
         statistics.getPopulationMeanList_1().add(area1 / time.getCurrent());
         statistics.getPopulationMeanList_2().add(area2 / time.getCurrent());
-        //todo int di conf popolazione
-        /*
+/*
         statistics.getPopulationConfIntList().add();
         statistics.getPopulationConfIntList_1().add();
         statistics.getPopulationConfIntList_2().add();
-        */
+*/
+        ArrayList<Double> stats;
+        stats = computeMean(statistics.getPopulationMeanList(), 0.05);
+        statistics.getPopulationConfIntList().add(stats.get(1));
+        //System.out.println("tot :" + stats.get((1)));
+        stats = computeMean(statistics.getPopulationMeanList_1(), 0.05);
+        statistics.getPopulationConfIntList_1().add(stats.get(1));
+        //System.out.println("1 :" + stats.get(1));
+        stats = computeMean(statistics.getPopulationMeanList_2(), 0.05);
+        statistics.getPopulationConfIntList_2().add(stats.get(1));
+        //System.out.println("2 :" + stats.get(1));
 
         // THR
         statistics.getThrMeanList().add(jobOut/time.getCurrent());
@@ -348,5 +361,11 @@ public class BatchMeanHandler {
         statistics.getThrConfIntList_1().add();
         statistics.getThrConfIntList_2().add();
         */
+        stats = computeMean(statistics.getThrMeanList(), 0.05);
+        statistics.getThrConfIntList().add(stats.get(1));
+        stats = computeMean(statistics.getThrMeanList_1(), 0.05);
+        statistics.getThrConfIntList_1().add(stats.get(1));
+        stats = computeMean(statistics.getThrMeanList_2(), 0.05);
+        statistics.getThrConfIntList_2().add(stats.get(1));
     }
 }

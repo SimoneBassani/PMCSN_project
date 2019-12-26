@@ -8,12 +8,14 @@ import java.util.ArrayList;
 public class Statistics {
 
     private double mean;
+    private double mean_1;
+    private double mean_2;
     private double variance;
     private double stdDeviation;
     private double confidenceInterval;
+    private double confidenceInterval_1;
+    private double confidenceInterval_2;
 
-    private double mean_1;
-    private double mean_2;
     //TODO utile?
     private double totalJob;
     private double totalJob_1;
@@ -397,5 +399,21 @@ public class Statistics {
 
     public void setMean_2(double mean_2) {
         this.mean_2 = mean_2;
+    }
+
+    public double getConfidenceInterval_1() {
+        return confidenceInterval_1;
+    }
+
+    public void setConfidenceInterval_1(double confidenceInterval_1) {
+        this.confidenceInterval_1 = confidenceInterval_1;
+    }
+
+    public double getConfidenceInterval_2() {
+        return confidenceInterval_2;
+    }
+
+    public void setConfidenceInterval_2(double confidenceInterval_2) {
+        this.confidenceInterval_2 = confidenceInterval_2;
     }
 }
