@@ -21,7 +21,7 @@ public class Configuration {
 
     private int policy = 2;                 //1 = transient, 2 = steady-state
 
-    private int round = 25; //25                  //numero di ripetizioni per transient. 25 nel transient, 1 nello steady-state
+    private int round = 25;                //numero di ripetizioni per transient. 25 nel transient, 1 nello steady-state
 
     private int batchSize = 30;             //dimensione del batch
     private int batchObservation = 4096;    //numero di osservazioni nel batch
