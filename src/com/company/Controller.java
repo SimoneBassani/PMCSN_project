@@ -206,12 +206,6 @@ public class Controller {
                 events.get(e).setNextTime(controllerHandler.getArrival(r, round, sarrival, arrival_rate, e));
                 //System.out.println("indice: " + e + " nuovo tempo di arrivo: " + events.get(e).getNextTime());
 
-                //todo cancellare
-                /*
-                double arrivalTime = time.getCurrent();
-                arrivalTimes.add(time.getCurrent());    //aggiungo il tempo di esecuzione alla lista per le stats
-                 */
-
                 /**
                  * Se il tempo di arrivo è oltre lo STOP blocco il processo degli arrivi
                  */
@@ -249,6 +243,7 @@ public class Controller {
 
                     //aggiorno i contatori
                     jobInCloud++;
+
                     if(e == 0) {
                         jobInSystem_1++;
                         jobInCloud_1++;
@@ -279,7 +274,8 @@ public class Controller {
                 /**
                  * Partenza dal clet
                  */
-                if(e > 1 && e < dimList) { //controllo il numero di elementi presenti per sapere se parte dal clet o dal cluster
+                if(e > 1 && e < dimList) {
+                    //controllo il numero di elementi presenti per sapere se parte dal clet o dal cluster
 
                     //System.out.println("e: " + e + "\npartenza dal clet " + time.getCurrent());
 
@@ -361,7 +357,6 @@ public class Controller {
                             batchMeanHandler.updateBatchStatistics_2(cletBatchStats);
                             cletBatchCount = 0;
                         }
-
                         if (cletBatchCount_1 == batchSize) {
                             batchMeanHandler.updateBatchStatistics_2(cletBatchStats_1);
                             cletBatchCount_1 = 0;
@@ -540,19 +535,7 @@ public class Controller {
          * questo è il calcolo statico delle stats steady-state
          */
         else{
-            // calcolo la mean of means e scrivo le medie utilizzate su file
-            batchMeanHandler.computeMeanOfMeans(cloudBatchStats, alpha);
-            /*
-            printer.printEnsembleStat(cletStatistics.getMeanList(),1, 2, 1, "mean", "ensStat");
-            printer.printEnsembleStat(cletStatistics.getConfidenceIntervalList(), 1, 2, 1, "confInt", "ensStat");
-
-            printer.printEnsembleStat(cletStatistics.getMeanList_1(),1, 2, 1, "mean_1", "ensStat");
-            printer.printEnsembleStat(cletStatistics.getMeanList_2(),1, 2, 1, "mean_2", "ensStat");
-
-            printer.printEnsembleStat(cloudStatistics.getMeanList(),2, 2, 1, "mean", "ensStat");
-            printer.printEnsembleStat(cloudStatistics.getConfidenceIntervalList(), 2, 2, 1, "confInt", "ensStat");
-            */
-            //printer.printSteadyStatsOnFile(cletStatistics, cloudStatistics, 1);
+            //calcolo la mean-of-means per ogni statistica
             System.out.println("\nCLET");
             batchMeanHandler.computeMeanOfMeans(cletBatchStats, alpha);
             System.out.println("\nCLET 1");
@@ -571,6 +554,21 @@ public class Controller {
             batchMeanHandler.computeMeanOfMeans(systemBatchStats_1, alpha);
             System.out.println("\nSYSTEM 2");
             batchMeanHandler.computeMeanOfMeans(systemBatchStats_2, alpha);
+
+            // stampa valori su file
+            printer.printOnFile(cletBatchStats, "cloudlet", "steady", "alg1", "global");
+            printer.printOnFile(cletBatchStats_1, "cloudlet", "steady", "alg1", "class1");
+            printer.printOnFile(cletBatchStats_2, "cloudlet", "steady", "alg1", "class2");
+
+            printer.printOnFile(cloudBatchStats, "cloud", "steady", "alg1", "global");
+            printer.printOnFile(cloudBatchStats_1, "cloud", "steady", "alg1", "class1");
+            printer.printOnFile(cloudBatchStats_2, "cloud", "steady", "alg1", "class2");
+
+            printer.printOnFile(systemBatchStats, "system", "steady", "alg1", "global");
+            printer.printOnFile(systemBatchStats_1, "system", "steady", "alg1", "class1");
+            printer.printOnFile(systemBatchStats_2, "system", "steady", "alg1", "class2");
+
+            //printer.printSteadyStatsOnFile(cletStatistics, cloudStatistics, 1);
         }
     }
 

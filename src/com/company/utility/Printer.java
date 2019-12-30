@@ -651,7 +651,7 @@ public class Printer {
                 //Creazione di un file vuoto
                 path += "system_" + statName + "_transient_" + alg + ".txt";
             else
-                path += "system_" + statName + "steady_" + alg + ".txt";
+                path += "system_" + statName + "_steady_" + alg + ".txt";
         }
         else if(type == 1) {
             if (policy == 1)
@@ -670,6 +670,36 @@ public class Printer {
         FileWriter fw = new FileWriter(file);
 
         //int i;
+        for(i=0; i<list.size(); ++i) {
+            fw.write(String.valueOf(list.get(i)));
+            fw.write("\n");
+        }
+        fw.write("\n");
+
+        fw.flush();
+        fw.close();
+    }
+
+    public void printOnFile(Statistics statistics, String node, String policy, String alg, String target) throws IOException {
+        String path = "C:\\Users\\Simone\\Desktop\\simulazione_pmcsn\\";
+
+        String meanPath = node + "_mean_" + target + "_" + policy + "_" + alg + ".txt";
+        String confIntPath = node + "_confInt_" + target + "_" + policy + "_" + alg + ".txt";
+
+        // RESPONSE TIME
+        writeFile(path + "responseTime\\" + meanPath , statistics.getRespTimeMeanList());
+        writeFile(path + "responseTime\\" + confIntPath, statistics.getRespTimeConfidenceIntervalList());
+
+        // POPULATION
+        writeFile(path + "population\\" + meanPath , statistics.getPopulationMeanList());
+        writeFile(path + "population\\" + confIntPath, statistics.getPopulationConfIntList());
+    }
+
+    private void writeFile(String path, ArrayList<Double> list) throws IOException {
+        File file = new File(path);
+        FileWriter fw = new FileWriter(file);
+
+        int i;
         for(i=0; i<list.size(); ++i) {
             fw.write(String.valueOf(list.get(i)));
             fw.write("\n");
