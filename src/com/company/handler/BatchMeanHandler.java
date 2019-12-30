@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static java.lang.Math.pow;
+import static java.lang.System.exit;
 
 public class BatchMeanHandler {
 
@@ -28,7 +29,7 @@ public class BatchMeanHandler {
 
         return single_instance;
     }
-
+/*
     private ArrayList<Double> cletMeanRespTime = new ArrayList<Double>();
     private ArrayList<Double> cloudMeanRespTime = new ArrayList<Double>();
     private ArrayList<Double> cletRespTimeConfInt = new ArrayList<>();
@@ -38,6 +39,7 @@ public class BatchMeanHandler {
     private ArrayList<Double> cloudMeanPopulation = new ArrayList<Double>();
     private ArrayList<Double> cletPopulationConfInt = new ArrayList<>();
     private ArrayList<Double> cloudPopulationConfInt = new ArrayList<>();
+    */
     //todo servono liste per job 1 e 2
 
     private ArrayList<Double> thrSystem = new ArrayList<>();
@@ -49,7 +51,7 @@ public class BatchMeanHandler {
     public static void setSingle_instance(BatchMeanHandler single_instance) {
         BatchMeanHandler.single_instance = single_instance;
     }
-
+/*
     public ArrayList<Double> getCletMeanRespTime() {
         return cletMeanRespTime;
     }
@@ -105,6 +107,7 @@ public class BatchMeanHandler {
     public void setCloudPopulationConfInt(ArrayList<Double> cloudPopulationConfInt) {
         this.cloudPopulationConfInt = cloudPopulationConfInt;
     }
+    */
 
     /**
      * Ho un batch completo. Calcolo l'intervallo di confidenza con la media e la var salvata nell'oggetto Statistics
@@ -114,7 +117,7 @@ public class BatchMeanHandler {
      * @param alpha
      */
     public void computeStatsForBatchMean(Statistics statistics, int n, double alpha){
-
+/*
         double stdDev = statistics.getStdDeviation();
 
         Rvms rvms = new Rvms();
@@ -124,6 +127,7 @@ public class BatchMeanHandler {
 
         statistics.getMeanList().add(statistics.getMean());
         statistics.getConfidenceIntervalList().add(confInt);
+        */
     }
 
 
@@ -133,22 +137,63 @@ public class BatchMeanHandler {
      * @param statistics
      * @param batchStats
      */
-    public void storeStatsForBatch(Statistics statistics, Statistics batchStats){
-
+    public void storeStatsForBatch(Statistics statistics, Statistics batchStats, int x){
+        System.out.println("store stats");
+        /*
+        //FUNZIONANTE
         statistics.getMeanList().add(batchStats.getMean());
         statistics.getConfidenceIntervalList().add(batchStats.getConfidenceInterval());
+        */
+        if(x==0){
+            statistics.getRespTimeMeanList().add(batchStats.getRespTimeMean());
+            statistics.getRespTimeConfidenceIntervalList().add(batchStats.getRespTimeConfidenceInterval());
+        }
+        //todo prende stat diverse
+        /*
+        else{
+            statistics.getMeanList().add(batchStats.getMean());
+            //statistics.getConfidenceIntervalList().add(batchStats.getConfidenceInterval());
+        }
+        */
     }
 
+
+    public ArrayList<Double> calcolaMedia(double mean, double variance, double x, long n, double alpha){
+        double d = x - mean; //d è la differenza tra x(i) e la media x(i-1)
+
+        mean += d / n;
+
+        if (n > 1)
+            variance += ((n - 1) * pow(d, 2)) / n;
+        else
+            variance = 0.0;
+
+        double stdDev = pow(variance / n, 0.5);
+
+        Rvms rvms = new Rvms();
+
+        double criticalValue = rvms.idfStudent((n - 1), 1 - (alpha / 2));
+        double confInt = (criticalValue * stdDev) / Math.sqrt(n - 1);
+
+        ArrayList<Double> result = new ArrayList<>();
+        result.add(mean);
+        result.add(variance);
+        result.add(confInt);
+
+        return result;
+    }
 
     /**
      * Metodo per calcolare la media in un batch con l'A di Welford
      * @param statistics
      */
-    public void computeMeanForBatchMean(Statistics statistics, long n, double x, double alpha){
+    public void computeMeanForBatchMean(Statistics statistics, long n, double responseTime, double area, SystemTime time,
+                                        double alpha){
+        /*
         double mean = statistics.getMean();
         double variance = statistics.getVariance();
 
-        double d = x - mean; //d è la differenza tra x(i) e la media x(i-1)
+        double d = responseTime - mean; //d è la differenza tra x(i) e la media x(i-1)
 
 
         mean += d / n;
@@ -168,9 +213,21 @@ public class BatchMeanHandler {
         //aggiorno l'oggetto legato a tale statistica
         statistics.setMean(mean);
         statistics.setVariance(variance);
-        statistics.setStdDeviation(stdDev);
         statistics.setConfidenceInterval(confInt);
+        */
+        ArrayList<Double> result = calcolaMedia(statistics.getRespTimeMean(), statistics.getRespTimeVariance(),
+        responseTime, n, alpha);
+        //System.out.println("respTime result: " + result);
+        statistics.setRespTimeMean(result.get(0));
+        statistics.setRespTimeVariance(result.get(1));
+        statistics.setRespTimeConfidenceInterval(result.get(2));
 
+        result = calcolaMedia(statistics.getPopulationMean(), statistics.getPopulationVariance(),
+                area/time.getCurrent(), n, alpha);
+        //System.out.println("pop result: " + result);
+        statistics.setPopulationMean(result.get(0));
+        statistics.setPopulationVariance(result.get(1));
+        statistics.setPopulationConfInt(result.get(2));
     }
 
 
@@ -186,8 +243,9 @@ public class BatchMeanHandler {
         Rvms rvms = new Rvms();
 
         double levelOfConfidence = 1 - alpha;
-        double mean = statistics.getMean();
-        double stdDev = statistics.getStdDeviation();
+
+        double mean = statistics.getRespTimeMean();
+        double stdDev = statistics.getRespTimeStdDeviation();
 
         double criticalValue = rvms.idfStudent((n - 1), 1 - (alpha / 2));
         double confInt = (criticalValue * stdDev) / Math.sqrt(n - 1);
@@ -274,98 +332,69 @@ public class BatchMeanHandler {
     public void computeMeanOfMeans(Statistics statistics, double alpha) {
 
         ArrayList <Double> stats;
-
+/*
+        System.out.println("liste di valori medi:");
+        System.out.println(statistics.getRespTimeMeanList().size() + "\n" + statistics.getRespTimeMeanList());
+        System.out.println(statistics.getPopulationMeanList().size() + "\n" + statistics.getPopulationMeanList());
+*/
+        System.out.println("mean-of-means:");
         // RESP TIME
-        stats = computeMean(statistics.getMeanList(), alpha);
-        statistics.setMean(stats.get(0));
-        statistics.setConfidenceInterval(stats.get(1));
-
-        stats = computeMean(statistics.getMeanList_1(), alpha);
-        statistics.setMean_1(stats.get(0));
-        statistics.setConfidenceInterval_1(stats.get(1));
-
-        stats = computeMean(statistics.getMeanList_2(), alpha);
-        statistics.setMean_2(stats.get(0));
-        statistics.setConfidenceInterval_2(stats.get(1));
+        stats = computeMean(statistics.getRespTimeMeanList(), alpha);
+        statistics.setRespTimeMean(stats.get(0));
+        statistics.setRespTimeConfidenceInterval(stats.get(1));
+        System.out.println(stats);
 
         // POP
         stats = computeMean(statistics.getPopulationMeanList(), alpha);
         statistics.setPopulationMean(stats.get(0));
         statistics.setPopulationConfInt(stats.get(1));
-
-        stats = computeMean(statistics.getPopulationMeanList_1(), alpha);
-        statistics.setPopulationMean_1(stats.get(0));
-        statistics.setPopulationConfInt_1(stats.get(1));
-
-        stats = computeMean(statistics.getPopulationMeanList_2(), alpha);
-        statistics.setPopulationMean_2(stats.get(0));
-        statistics.setPopulationConfInt_2(stats.get(1));
+        System.out.println(stats);
 
         // THR
+        /*
         stats = computeMean(statistics.getThrMeanList(), alpha);
         statistics.setThrMean(stats.get(0));
         statistics.setThrConfInt(stats.get(1));
-
-        stats = computeMean(statistics.getThrMeanList_1(), alpha);
-        statistics.setThrMean_1(stats.get(0));
-        statistics.setThrConfInt_1(stats.get(1));
-
-        stats = computeMean(statistics.getThrMeanList_2(), alpha);
-        statistics.setThrMean_2(stats.get(0));
-        statistics.setThrConfInt_2(stats.get(1));
+        */
     }
 
     public void updateBatchStatistics(SystemTime time, ArrayList<Event> events, ArrayList<Sum> sums, int n,
                                       long jobProcessed, long jobProcessedCloud, long jobArrived, double area,
                                       double areaNode, double area1, double area2, double jobOut, double jobOut_1,
                                       double jobOut_2, int node, Statistics statistics, Statistics batchStatistics,
-                                      Statistics batchStatistics_1, Statistics batchStatistics_2) {
+                                      int statisticType) {
 
-        // TEMPO DI RISPOSTA
-        statistics.getMeanList().add(batchStatistics.getMean());
-        statistics.getConfidenceIntervalList().add(batchStatistics.getConfidenceInterval());
-
-        statistics.getMeanList_1().add(batchStatistics_1.getMean());
-        statistics.getConfidenceIntervalList_1().add(batchStatistics_1.getConfidenceInterval());
-
-        statistics.getMeanList_2().add(batchStatistics_2.getMean());
-        statistics.getConfidenceIntervalList_2().add(batchStatistics_2.getConfidenceInterval());
-
+        if(statisticType == 0) {
+            // TEMPO DI RISPOSTA
+            statistics.getRespTimeMeanList().add(batchStatistics.getRespTimeMean());
+            statistics.getThrConfIntList().add(batchStatistics.getRespTimeConfidenceInterval());
+        }
         // POPOLAZIONE
         statistics.getPopulationMeanList().add(areaNode / time.getCurrent());
-        statistics.getPopulationMeanList_1().add(area1 / time.getCurrent());
-        statistics.getPopulationMeanList_2().add(area2 / time.getCurrent());
-/*
-        statistics.getPopulationConfIntList().add();
-        statistics.getPopulationConfIntList_1().add();
-        statistics.getPopulationConfIntList_2().add();
-*/
+
         ArrayList<Double> stats;
         stats = computeMean(statistics.getPopulationMeanList(), 0.05);
         statistics.getPopulationConfIntList().add(stats.get(1));
-        //System.out.println("tot :" + stats.get((1)));
-        stats = computeMean(statistics.getPopulationMeanList_1(), 0.05);
-        statistics.getPopulationConfIntList_1().add(stats.get(1));
-        //System.out.println("1 :" + stats.get(1));
-        stats = computeMean(statistics.getPopulationMeanList_2(), 0.05);
-        statistics.getPopulationConfIntList_2().add(stats.get(1));
-        //System.out.println("2 :" + stats.get(1));
 
         // THR
         statistics.getThrMeanList().add(jobOut/time.getCurrent());
-        statistics.getThrMeanList_1().add(jobOut_1/time.getCurrent());
-        statistics.getThrMeanList_2().add(jobOut_2/time.getCurrent());
-        //todo int di conf thr
-        /*
-        statistics.getThrConfIntList();
-        statistics.getThrConfIntList_1().add();
-        statistics.getThrConfIntList_2().add();
-        */
         stats = computeMean(statistics.getThrMeanList(), 0.05);
         statistics.getThrConfIntList().add(stats.get(1));
-        stats = computeMean(statistics.getThrMeanList_1(), 0.05);
-        statistics.getThrConfIntList_1().add(stats.get(1));
-        stats = computeMean(statistics.getThrMeanList_2(), 0.05);
-        statistics.getThrConfIntList_2().add(stats.get(1));
+    }
+
+
+    /**
+     * Aggiornamento per batchMod
+     * @param statistics
+     */
+    public void updateBatchStatistics_2(Statistics statistics) {
+
+        // TEMPO DI RISPOSTA
+        statistics.getRespTimeMeanList().add(statistics.getRespTimeMean());
+        statistics.getRespTimeConfidenceIntervalList().add(statistics.getRespTimeConfidenceInterval());
+
+        // POPOLAZIONE
+        statistics.getPopulationMeanList().add(statistics.getPopulationMean());
+        statistics.getPopulationConfIntList().add(statistics.getPopulationConfInt());
     }
 }

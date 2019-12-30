@@ -66,8 +66,10 @@ public class TransientHandler {
 
         int j;
         for(j=0; j<round; ++j) {
+            /*
             avgCletPopulation.add(new Statistics(0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
             avgCloudPopulation.add(new Statistics(0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
+            */
         }
 
         //ciclo in cui viene eseguita la simulazione transiente
@@ -102,12 +104,12 @@ public class TransientHandler {
              * IDEA: Per evitare l'uso delle strutture "avg" posso definire una lista in "ensCLet/CloudStat"
              * e usare l'indice del round come indice della lista.
              */
-            statisticsHandler.computeStatistics(ensCletStat, i, cletStatistics.getMean(), alpha);
-            statisticsHandler.computeStatistics(ensCloudStat, i, cloudStatistics.getMean(), alpha);
-
+            statisticsHandler.computeStatistics(ensCletStat, i, cletStatistics.getRespTimeMean(), alpha);
+            statisticsHandler.computeStatistics(ensCloudStat, i, cloudStatistics.getRespTimeMean(), alpha);
+/*
             statisticsHandler.computeStatistics(ensCletPopStat, i, cletStatistics.getTotalJob(), alpha);
             statisticsHandler.computeStatistics(ensCloudPopStat, i, cloudStatistics.getTotalJob(), alpha);
-
+**/
             //TODO cancellare
 /*
             System.out.println("*******\nsize test: " + ensCletStat.getMeanList().size());
@@ -146,13 +148,13 @@ public class TransientHandler {
         System.out.println("--------- FINITI I ROUND ---------");
         System.out.println("\n+++ TRANSIENT STATS +++");
         statisticsHandler.printTransientStats(ensCletStat, ensCloudStat, alpha, round, ensamblePopulation_clet, ensamblePopulation_cloud);
-
+/*
         System.out.println("\n*** POP STAT\n" + ensCletPopStat.getMean() + "\n" + ensCloudPopStat.getMean());
         System.out.println(ensCletPopStat.getMeanList());
         System.out.println(ensCletPopStat.getConfidenceIntervalList());
         System.out.println(ensCloudPopStat.getMeanList());
         System.out.println(ensCloudPopStat.getConfidenceIntervalList());
-
+*/
         /**
          * Invio le statistiche sul file
          */
@@ -165,6 +167,7 @@ public class TransientHandler {
         System.out.println("*******\nsize test: " + ensCletStat.getMeanList().size());
         System.out.println("size test: " + ensCletStat.getConfidenceIntervalList().size());
 */
+/*
         //scrivo su file i dati relativi al tempo medio di risposta
         printer.printEnsembleStat(ensCletStat.getMeanList(), 1, 1, algType, "mean", "ensStat");
         printer.printEnsembleStat(ensCletStat.getConfidenceIntervalList(), 1, 1, algType, "confInt", "ensStat");
@@ -178,14 +181,6 @@ public class TransientHandler {
 
         printer.printEnsembleStat(ensCloudPopStat.getMeanList(), 2, 1, algType, "mean", "population");
         printer.printEnsembleStat(ensCloudPopStat.getConfidenceIntervalList(), 2, 1, algType, "confInt", "population");
-
-        //TODO cancellare
-        /**
-         * Scrivo le statistiche sul clet e sul cloud
-         */
-        /*
-        printer.printStatsOnFile(avgCletPopulation, 1, 1, algType);
-        printer.printStatsOnFile(avgCloudPopulation, 2, 1, algType);
-        */
+*/
     }
 }

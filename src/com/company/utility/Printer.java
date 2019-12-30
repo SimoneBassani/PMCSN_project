@@ -201,28 +201,28 @@ public class Printer {
         fw.write(String.valueOf("-  Tempo di risposta\n"));
         fw.write(String.valueOf("mean\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getMean()));
+            fw.write(String.valueOf(statisticsList.get(i).getRespTimeMean()));
             fw.write("\n");
         }
         fw.write("\n");
 
         fw.write(String.valueOf("var\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getVariance()));
+            fw.write(String.valueOf(statisticsList.get(i).getRespTimeVariance()));
             fw.write("\n");
         }
         fw.write("\n");
 
         fw.write(String.valueOf("std dev\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getStdDeviation()));
+            fw.write(String.valueOf(statisticsList.get(i).getRespTimeStdDeviation()));
             fw.write("\n");
         }
         fw.write("\n");
 
         fw.write(String.valueOf("confInt\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getConfidenceInterval()));
+            fw.write(String.valueOf(statisticsList.get(i).getRespTimeConfidenceInterval()));
             fw.write("\n");
         }
         fw.write("\n");
@@ -230,21 +230,21 @@ public class Printer {
         fw.write(String.valueOf("-  Population\n"));
         fw.write(String.valueOf("# class 1 jobs\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getTotalJob_1()));
+            //fw.write(String.valueOf(statisticsList.get(i).getTotalJob_1()));
             fw.write("\n");
         }
         fw.write("\n");
 
         fw.write(String.valueOf("# class 2 jobs\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getTotalJob_2()));
+           // fw.write(String.valueOf(statisticsList.get(i).getTotalJob_2()));
             fw.write("\n");
         }
         fw.write("\n");
 
         fw.write(String.valueOf("# total jobs\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getTotalJob()));
+            //fw.write(String.valueOf(statisticsList.get(i).getTotalJob()));
             fw.write("\n");
         }
         fw.write("\n");
@@ -270,28 +270,28 @@ public class Printer {
         fw.write(String.valueOf("-  Tempo di risposta\n"));
         fw.write(String.valueOf("mean\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getMean()));
+            //fw.write(String.valueOf(statisticsList.get(i).getMean()));
             fw.write("\n");
         }
         fw.write("\n");
 
         fw.write(String.valueOf("var\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getVariance()));
+            //fw.write(String.valueOf(statisticsList.get(i).getVariance()));
             fw.write("\n");
         }
         fw.write("\n");
 
         fw.write(String.valueOf("std dev\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getStdDeviation()));
+            //fw.write(String.valueOf(statisticsList.get(i).getStdDeviation()));
             fw.write("\n");
         }
         fw.write("\n");
 
         fw.write(String.valueOf("confInt\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getConfidenceInterval()));
+            //fw.write(String.valueOf(statisticsList.get(i).getConfidenceInterval()));
             fw.write("\n");
         }
         fw.write("\n");
@@ -299,21 +299,21 @@ public class Printer {
         fw.write(String.valueOf("-  Population\n"));
         fw.write(String.valueOf("# class 1 jobs\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getTotalJob_1()));
+            //fw.write(String.valueOf(statisticsList.get(i).getTotalJob_1()));
             fw.write("\n");
         }
         fw.write("\n");
 
         fw.write(String.valueOf("# class 2 jobs\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getTotalJob_2()));
+            //fw.write(String.valueOf(statisticsList.get(i).getTotalJob_2()));
             fw.write("\n");
         }
         fw.write("\n");
 
         fw.write(String.valueOf("# total jobs\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getTotalJob()));
+            //fw.write(String.valueOf(statisticsList.get(i).getTotalJob()));
             fw.write("\n");
         }
         fw.write("\n");
@@ -337,28 +337,28 @@ public class Printer {
         fw.write(String.valueOf("-  Tempo di risposta\n"));
         fw.write(String.valueOf("mean\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getMean()));
+            //fw.write(String.valueOf(statisticsList.get(i).getMean()));
             fw.write("\n");
         }
         fw.write("\n");
 
         fw.write(String.valueOf("var\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getVariance()));
+            //fw.write(String.valueOf(statisticsList.get(i).getVariance()));
             fw.write("\n");
         }
         fw.write("\n");
 
         fw.write(String.valueOf("std dev\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getStdDeviation()));
+            //fw.write(String.valueOf(statisticsList.get(i).getStdDeviation()));
             fw.write("\n");
         }
         fw.write("\n");
 
         fw.write(String.valueOf("confInt\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getConfidenceInterval()));
+            //fw.write(String.valueOf(statisticsList.get(i).getConfidenceInterval()));
             fw.write("\n");
         }
         fw.write("\n");
@@ -366,21 +366,21 @@ public class Printer {
         fw.write(String.valueOf("-  Population\n"));
         fw.write(String.valueOf("# class 1 jobs\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getTotalJob_1()));
+            //fw.write(String.valueOf(statisticsList.get(i).getTotalJob_1()));
             fw.write("\n");
         }
         fw.write("\n");
 
         fw.write(String.valueOf("# class 2 jobs\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getTotalJob_2()));
+            //fw.write(String.valueOf(statisticsList.get(i).getTotalJob_2()));
             fw.write("\n");
         }
         fw.write("\n");
 
         fw.write(String.valueOf("# total jobs\n"));
         for(i=0; i<statisticsList.size(); ++i) {
-            fw.write(String.valueOf(statisticsList.get(i).getTotalJob()));
+            //fw.write(String.valueOf(statisticsList.get(i).getTotalJob()));
             fw.write("\n");
         }
         fw.write("\n");
@@ -421,6 +421,7 @@ public class Printer {
      * Metodo per stampare le statistiche prodotte da un round
      */
     public void printRoundStatistics(Statistics cletStatistics, Statistics cloudStatistics) {
+        /*
         System.out.println("\ncletStatistics");
         System.out.println("    - mean = " + cletStatistics.getMean() + "\n    - variance = " + cletStatistics.getVariance() +
                 "\n    - std deviation = " + cletStatistics.getStdDeviation() + "\n");
@@ -428,7 +429,7 @@ public class Printer {
         System.out.println("cloudStatistics:");
         System.out.println("    - mean = " + cloudStatistics.getMean() + "\n    - variance = " + cloudStatistics.getVariance() +
                 "\n    - std deviation = " + cloudStatistics.getStdDeviation() + "\n");
-
+*/
     }
 
 
@@ -452,6 +453,7 @@ public class Printer {
      * @param stampa
      */
     public void printBatchMeanList(int stampa) {
+        /*
         if (stampa != 0) {
             BatchMeanHandler batchMeanHandler = BatchMeanHandler.getInstance();
             ArrayList<Double> list = batchMeanHandler.getCletMeanRespTime();
@@ -462,16 +464,20 @@ public class Printer {
             for (j = 0; j < list.size(); ++j)
                 System.out.println(list.get(j));
         }
+        */
     }
 
     public void printEntireStat(Statistics statistics) {
-
+/*
         System.out.println("\nmean: " + statistics.getMean());
         System.out.println("var " + statistics.getVariance());
         System.out.println("std dev " + statistics.getStdDeviation());
+        */
+        /*
         System.out.println("class 1 jobs " + statistics.getTotalJob_1());
         System.out.println("class 2 jobs " + statistics.getTotalJob_2());
         System.out.println("total of jobs " + statistics.getTotalJob());
+        */
         System.out.println("\n");
     }
 
@@ -497,16 +503,18 @@ public class Printer {
     //todo ho cancellato dei job passati come parametro. jobinsystem1 e jobinsystem2 per es
     public void printJobStat(long jobInSystem, long jobInClet, long jobInClet_1, long jobInClet_2, long jobInCloud,
                              long jobInCloud_1, long jobInCloud_2, long jobOutSystem, long jobOutClet, long jobOutClet_1,
-                             long jobOutClet_2, long jobOutCloud, long jobOutCloud_1, long jobOutCloud_2, SystemTime time) {
+                             long jobOutClet_2, long jobOutCloud, long jobOutCloud_1, long jobOutCloud_2, int jobInterrotti,
+                             SystemTime time) {
 
         System.out.println("# OF JOBS:\n - in system: " + jobInSystem +
                 //"\n - 1 in system: " + jobInSystem_1 + "\n - 2 in system: " + jobInSystem_2 +
                 "\n - in clet: " + jobInClet +
                 "\n - 1 in clet: " + jobInClet_1 + "\n - 2 in clet: " + jobInClet_2 + "\n - in cloud: " +
                 jobInCloud + "\n - 1 in cloud: " + jobInCloud_1 + "\n - 2 in cloud: " + jobInCloud_2 +
-                "\n - out of systme: " + jobOutSystem + "\n - out clet: " + jobOutClet + "\n - 1 out clet: " +
+                "\n - out of system: " + jobOutSystem + "\n - out clet: " + jobOutClet + "\n - 1 out clet: " +
                 jobOutClet_1 + "\n - 2 out clet: " + jobOutClet_2 + "\n - out cloud: " + jobOutCloud +
-                "\n - 1 out cloud: " + jobOutCloud_1 + "\n - 2 out cloud: " + jobOutCloud_2);
+                "\n - 1 out cloud: " + jobOutCloud_1 + "\n - 2 out cloud: " + jobOutCloud_2 +
+                "\n - 2 interrotti: " + jobInterrotti);
 
         double currentTime = time.getCurrent();
 
@@ -570,7 +578,7 @@ public class Printer {
 
 
     public void printSystemStatus(long jobInSystem, long jobInClet, long jobInClet_1, long jobInClet_2, long jobInCloud,
-                                  long jobInCloud_1, long jobInCloud_2, int jobInterrotti) {
+                                  long jobInCloud_1, long jobInCloud_2) {
 
         System.out.println("\njob in system: " + jobInSystem +
                 "\n job in clet: " + jobInClet + "  job1 in clet: " + jobInClet_1 + "  job2 in clet: " + jobInClet_2 +
@@ -673,7 +681,7 @@ public class Printer {
     }
 
 
-
+/*
     public void printSteadyStatsOnFile(Statistics cletStatistics, Statistics cloudStatistics, int alg) throws IOException {
         //RESPONSE TIME
         printEnsembleStat(cletStatistics.getMeanList(),1, 2, alg, "mean", "responseTime");
@@ -720,4 +728,5 @@ public class Printer {
         printEnsembleStat(cloudStatistics.getThrConfIntList_1(), 2, 2, alg, "confInt_1", "thr");
         printEnsembleStat(cloudStatistics.getThrConfIntList_2(), 2, 2, alg, "confInt_2", "thr");
     }
+    */
 }
