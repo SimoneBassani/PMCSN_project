@@ -5,8 +5,10 @@ import java.util.ArrayList;
 /**
  * Classe contenente le statistiche relative ad una ripetizione.
  */
+//todo cancellare varianza e stdDev??
 public class Statistics {
 
+    // STEADY
     private double respTimeMean;
     private double respTimeVariance;
     private double respTimeStdDeviation;

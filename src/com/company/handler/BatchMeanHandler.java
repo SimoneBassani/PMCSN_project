@@ -12,11 +12,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static java.lang.Math.pow;
-import static java.lang.System.exit;
 
 public class BatchMeanHandler {
-
-    //private BatchMeanHandler(){}
 
     // static variable single_instance of type Singleton
     private static BatchMeanHandler single_instance = null;
@@ -271,13 +268,14 @@ public class BatchMeanHandler {
             controller.runAlgorithm1(cletStatistics, cloudStatistics);
         else
             controller.runAlgorithm2(cletStatistics, cloudStatistics);
-
+        /*
         System.out.println("\n+++ STEADY-STATE STATS +++");
 
         //cletStat e cloudStat contengono le liste con i valori dei vari round/batch, quindi ne calcolo la "mean of means"
         batchMeanHandler.computeMeanOfMeans(cletStatistics, alpha);
         batchMeanHandler.computeMeanOfMeans(cloudStatistics, alpha);
         statisticsHandler.printSteadyStateStats(cletStatistics, cloudStatistics, alpha);
+        */
     }
 
 
@@ -342,13 +340,13 @@ public class BatchMeanHandler {
         stats = computeMean(statistics.getRespTimeMeanList(), alpha);
         statistics.setRespTimeMean(stats.get(0));
         statistics.setRespTimeConfidenceInterval(stats.get(1));
-        System.out.println(stats);
+        System.out.println(stats.get(0) + " " + (stats.get(0)-stats.get(1)) + " " + (stats.get(0)+stats.get(1)));
 
         // POP
         stats = computeMean(statistics.getPopulationMeanList(), alpha);
         statistics.setPopulationMean(stats.get(0));
         statistics.setPopulationConfInt(stats.get(1));
-        System.out.println(stats);
+        System.out.println(stats.get(0) + " " + (stats.get(0)-stats.get(1)) + " " + (stats.get(0)+stats.get(1)));
 
         // THR
         /*
