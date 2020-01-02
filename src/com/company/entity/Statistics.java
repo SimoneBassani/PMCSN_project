@@ -8,7 +8,6 @@ import java.util.ArrayList;
 //todo cancellare varianza e stdDev??
 public class Statistics {
 
-    // STEADY
     private double respTimeMean;
     private double respTimeVariance;
     private double respTimeStdDeviation;
@@ -39,11 +38,13 @@ public class Statistics {
         this.respTimeStdDeviation = stdDeviation;
     }
 
-    public Statistics(double mean, double variance, double stdDeviation, double confidenceInterval) {
+    public Statistics(double mean, double variance, double stdDeviation, double popMean, double popVar, double popConfInt) {
         this.respTimeMean = mean;
         this.respTimeVariance = variance;
         this.respTimeStdDeviation = stdDeviation;
-        this.respTimeConfidenceInterval = confidenceInterval;
+        this.populationMean = popMean;
+        this.populationVariance = popVar;
+        this.populationConfInt = popConfInt;
     }
 
     public double getRespTimeMean() {

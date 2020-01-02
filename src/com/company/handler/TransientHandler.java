@@ -26,19 +26,26 @@ public class TransientHandler {
         StatisticsHandler statisticsHandler = new StatisticsHandler();
         Printer printer = new Printer();
 
+        String method = "transient";
+
+        String alg;
+        if(algType == 1)
+            alg = "alg1";
+        else
+            alg = "alg2";
+
         // Oggetto che memorizza l'ensamble statistics riferite al tempo
+        Statistics ensCletStat = new Statistics(0, 0, 0, 0, 0, 0);
+        Statistics ensCletStat_1 = new Statistics(0, 0, 0, 0, 0, 0);
+        Statistics ensCletStat_2 = new Statistics(0, 0, 0, 0, 0, 0);
 
-        Statistics ensCletStat = new Statistics(0, 0, 0);
-        Statistics ensCletStat_1 = new Statistics(0, 0, 0);
-        Statistics ensCletStat_2 = new Statistics(0, 0, 0);
+        Statistics ensCloudStat = new Statistics(0, 0, 0, 0, 0, 0);
+        Statistics ensCloudStat_1 = new Statistics(0, 0, 0, 0, 0, 0);
+        Statistics ensCloudStat_2 = new Statistics(0, 0, 0, 0, 0, 0);
 
-        Statistics ensCloudStat = new Statistics(0, 0, 0);
-        Statistics ensCloudStat_1 = new Statistics(0, 0, 0);
-        Statistics ensCloudStat_2 = new Statistics(0, 0, 0);
-
-        Statistics ensSystemStat = new Statistics(0, 0, 0);
-        Statistics ensSystemStat_1 = new Statistics(0, 0, 0);
-        Statistics ensSystemStat_2 = new Statistics(0, 0, 0);
+        Statistics ensSystemStat = new Statistics(0, 0, 0, 0, 0, 0);
+        Statistics ensSystemStat_1 = new Statistics(0, 0, 0, 0, 0, 0);
+        Statistics ensSystemStat_2 = new Statistics(0, 0, 0, 0, 0, 0);
 
         //todo usare una classe apposita per ens?
         /*
@@ -48,9 +55,8 @@ public class TransientHandler {
         //ciclo in cui viene eseguita la simulazione transiente
         int i;
         for(i=1; i<=round; ++i){
-            //System.out.println("round: " + i);
+            System.out.println("round: " + i);
 
-            //todo passare queste sia per transient che steady
             Statistics cletStatistics = new Statistics(0, 0, 0);
             Statistics cletStatistics_1 = new Statistics(0, 0, 0);
             Statistics cletStatistics_2 = new Statistics(0, 0, 0);
@@ -68,7 +74,9 @@ public class TransientHandler {
              * Nel caso transient calcolo le statistiche per le varie ripetizioni e quindi per l'ensamble
              */
             if(algType == 1)
-                controller.runAlgorithm1(cletStatistics, cloudStatistics);
+                //controller.runAlgorithm1(cletStatistics, cloudStatistics);
+                controller_2.runAlgorithm1(cletStatistics, cletStatistics_1, cletStatistics_2, cloudStatistics,
+                        cloudStatistics_1, cloudStatistics_2, systemStatistics, systemStatistics_1, systemStatistics_2);
             else
                 //controller.runAlgorithm2(cletStatistics, cloudStatistics);
                 controller_2.runAlgorithm2(cletStatistics, cletStatistics_1, cletStatistics_2, cloudStatistics,
@@ -80,6 +88,7 @@ public class TransientHandler {
              * IDEA: Per evitare l'uso delle strutture "avg" posso definire una lista in "ensCLet/CloudStat"
              * e usare l'indice del round come indice della lista.
              */
+            //System.out.println("fine round. Pre metodo" + ensCletStat.getRespTimeMean());
             statisticsHandler.computeMeanOfMeans_transient(ensCletStat, cletStatistics, i, alpha, "ensClet");
             statisticsHandler.computeMeanOfMeans_transient(ensCletStat_1, cletStatistics_1, i, alpha, "ensClet1");
             statisticsHandler.computeMeanOfMeans_transient(ensCletStat_2, cletStatistics_2, i, alpha, "ensClet2");
@@ -91,21 +100,30 @@ public class TransientHandler {
             statisticsHandler.computeMeanOfMeans_transient(ensSystemStat, systemStatistics, i, alpha, "sys");
             statisticsHandler.computeMeanOfMeans_transient(ensSystemStat_1, systemStatistics_1, i, alpha, "sys1");
             statisticsHandler.computeMeanOfMeans_transient(ensSystemStat_2, systemStatistics_2, i, alpha, "sys2");
-
         }
 
         System.out.println("--------- FINITI I ROUND ---------");
         System.out.println("\n+++ TRANSIENT STATS +++");
-        System.out.println();
-        statisticsHandler.printTransientStats(ensCletStat, ensCletStat_1, ensCletStat_2, ensCloudStat, ensCloudStat_1,
-                ensCloudStat_2, ensSystemStat, ensSystemStat_1, ensSystemStat_2);
+        System.out.println("CLET");
+        statisticsHandler.printTransientStats(ensCletStat, ensCletStat_1, ensCletStat_2);
+        System.out.println("\nCLOUD");
+        statisticsHandler.printTransientStats(ensCloudStat, ensCloudStat_1, ensCloudStat_2);
+        System.out.println("\nSYSTEM");
+        statisticsHandler.printTransientStats(ensSystemStat, ensSystemStat_1, ensSystemStat_2);
 
         /**
          * Invio le statistiche sul file
          */
-        /*
-        printer.printRoundPopulation(ensamblePopulation_clet, 1, 1, algType);
-        printer.printRoundPopulation(ensamblePopulation_cloud, 2, 1, algType);
-*/
+        printer.printOnFile(ensCletStat, "cloudlet", method, alg, "global");
+        printer.printOnFile(ensCletStat_1, "cloudlet", method, alg, "class1");
+        printer.printOnFile(ensCletStat_2, "cloudlet", method, alg,"class2");
+
+        printer.printOnFile(ensCloudStat, "cloud", method, alg, "global");
+        printer.printOnFile(ensCloudStat_1, "cloud", method, alg, "class1");
+        printer.printOnFile(ensCloudStat_2, "cloud", method, alg, "class2");
+
+        printer.printOnFile(ensSystemStat, "system", method, alg, "global");
+        printer.printOnFile(ensSystemStat_1, "system", method, alg, "class1");
+        printer.printOnFile(ensSystemStat_2, "system", method, alg, "class2");
     }
 }

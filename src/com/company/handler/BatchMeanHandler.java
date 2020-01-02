@@ -335,18 +335,18 @@ public class BatchMeanHandler {
         System.out.println(statistics.getRespTimeMeanList().size() + "\n" + statistics.getRespTimeMeanList());
         System.out.println(statistics.getPopulationMeanList().size() + "\n" + statistics.getPopulationMeanList());
 */
-        System.out.println("mean-of-means:");
+        //System.out.println("mean-of-means:");
         // RESP TIME
         stats = computeMean(statistics.getRespTimeMeanList(), alpha);
         statistics.setRespTimeMean(stats.get(0));
         statistics.setRespTimeConfidenceInterval(stats.get(1));
-        System.out.println(stats.get(0) + " " + (stats.get(0)-stats.get(1)) + " " + (stats.get(0)+stats.get(1)));
+        //System.out.println(stats.get(0) + " " + (stats.get(0)-stats.get(1)) + " " + (stats.get(0)+stats.get(1)));
 
         // POP
         stats = computeMean(statistics.getPopulationMeanList(), alpha);
         statistics.setPopulationMean(stats.get(0));
         statistics.setPopulationConfInt(stats.get(1));
-        System.out.println(stats.get(0) + " " + (stats.get(0)-stats.get(1)) + " " + (stats.get(0)+stats.get(1)));
+        //System.out.println(stats.get(0) + " " + (stats.get(0)-stats.get(1)) + " " + (stats.get(0)+stats.get(1)));
 
         // THR
         /*

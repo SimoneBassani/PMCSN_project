@@ -133,29 +133,41 @@ public class StatisticsHandler {
 
 
     /**
-     * Metodo che stampa le statistiche transient
+     * Metodo che stampa le statistiche transient su schermo.
+     * @param ensStat oggetto contenente le statistiche relative ai job generici
+     * @param ensStat_1 oggetto contenente le statistiche relative ai job di classe 1
+     * @param ensStat_2 oggetto contenente le statistiche relative ai job di classe 2
      */
-    public void printTransientStats(Statistics ensCletStat, Statistics ensCletStat_1, Statistics ensCletStat_2,
-                                    Statistics ensCloudStat, Statistics ensCloudStat_1, Statistics ensCloudStat_2,
-                                    Statistics ensSystemStat, Statistics ensSystemStat_1, Statistics ensSystemStat_2) {
+    public void printTransientStats(Statistics ensStat, Statistics ensStat_1, Statistics ensStat_2) {
 
-        System.out.println("\nCLET");
-        System.out.println("- response time: \n" + ensCletStat.getRespTimeMean() + "\n" + ensCletStat_1.getRespTimeMean()
-                + "\n" + ensCletStat_2.getRespTimeMean());
-        System.out.println("- population: \n" + ensCletStat.getPopulationMean() + "\n" +
-                ensCletStat_1.getPopulationMean() + "\n" + ensCletStat_2.getPopulationMean());
+        //RESP TIME
+        System.out.println("- response time:");
+        System.out.println("    - global: " + ensStat.getRespTimeMean() + ", " +
+                        (ensStat.getRespTimeMean() - ensStat.getRespTimeConfidenceInterval()) + ", " +
+                        (ensStat.getRespTimeMean() + ensStat.getRespTimeConfidenceInterval()));
 
-        System.out.println("\nCLOUD");
-        System.out.println("- response time: \n" + ensCloudStat.getRespTimeMean() + "\n" + ensCloudStat_1.getRespTimeMean()
-                + "\n" + ensCloudStat_2.getRespTimeMean());
-        System.out.println("- population: \n" + ensCloudStat.getPopulationMean() + "\n" +
-                ensCloudStat_1.getPopulationMean() + "\n" + ensCloudStat_2.getPopulationMean());
+        System.out.println("    - class 1: " + ensStat_1.getRespTimeMean() + ", " +
+                (ensStat_1.getRespTimeMean() - ensStat_1.getRespTimeConfidenceInterval()) + ", " +
+                (ensStat_1.getRespTimeMean() + ensStat_1.getRespTimeConfidenceInterval()));
 
-        System.out.println("\nSYSTEM");
-        System.out.println("- response time: \n" + ensSystemStat.getRespTimeMean() + "\n" + ensSystemStat_1.getRespTimeMean()
-                + "\n" + ensSystemStat_2.getRespTimeMean());
-        System.out.println("- population: \n" + ensSystemStat.getPopulationMean() + "\n" +
-                ensSystemStat_1.getPopulationMean() + "\n" + ensSystemStat_2.getPopulationMean());
+        System.out.println("    - class 2: " + ensStat_2.getRespTimeMean() + ", " +
+                (ensStat_2.getRespTimeMean() - ensStat_2.getRespTimeConfidenceInterval()) + ", " +
+                (ensStat_2.getRespTimeMean() + ensStat_2.getRespTimeConfidenceInterval()));
+
+
+        // POPULATION
+        System.out.println("- population:");
+        System.out.println("    - global: " + ensStat.getPopulationMean() + ", " +
+                (ensStat.getPopulationMean() - ensStat.getPopulationConfInt()) + ", " +
+                (ensStat.getPopulationMean() + ensStat.getPopulationConfInt()));
+
+        System.out.println("    - class 1: " + ensStat_1.getPopulationMean() + ", " +
+                (ensStat_1.getPopulationMean() - ensStat_1.getPopulationConfInt()) + ", " +
+                (ensStat_1.getPopulationMean() + ensStat_1.getPopulationConfInt()));
+
+        System.out.println("    - class 2: " + ensStat_2.getPopulationMean() + ", " +
+                (ensStat_2.getPopulationMean() - ensStat_2.getPopulationConfInt()) + ", " +
+                (ensStat_2.getPopulationMean() + ensStat_2.getPopulationConfInt()));
     }
 
 
@@ -506,73 +518,104 @@ public class StatisticsHandler {
 
         ArrayList <Double> stats;
 
-        System.out.println("mean-of-means:");
+        //System.out.println("mean-of-means:");
         // RESP TIME
         stats = calcolaMedia(statistics.getRespTimeMean(), statistics.getRespTimeVariance(), x, n, alpha, node);
         statistics.setRespTimeMean(stats.get(0));
         statistics.setRespTimeConfidenceInterval(stats.get(1));
-        System.out.println("*" + stats.get(0) + " " + stats.get(1) + " " + stats.get(2));
+        //System.out.println("*" + stats.get(0) + " " + stats.get(1) + " " + stats.get(2));
 
         // POP
         stats = calcolaMedia(statistics.getPopulationMean(), statistics.getPopulationVariance(),area/time.getCurrent(),
                 n, alpha, node);
         statistics.setPopulationMean(stats.get(0));
         statistics.setPopulationConfInt(stats.get(1));
-        System.out.println("**" + stats.get(0) + " " + stats.get(1) + " " + stats.get(2));
+        //System.out.println("**" + stats.get(0) + " " + stats.get(1) + " " + stats.get(2));
     }
 
 
     /**
      * Calcolo la "mean of means" calcolate per i batch e il relativo intervallo di confidenza
      */
-    public void computeMeanOfMeans_transient(Statistics statistics, Statistics roundStatistics, int n, double alpha,
+    public void computeMeanOfMeans_transient(Statistics ensStatistics, Statistics roundStatistics, int n, double alpha,
                                              String node) {
 
         ArrayList <Double> stats;
 
-        System.out.println("mean-of-means:");
+        //System.out.println("mean-of-means:");
         // RESP TIME
-        stats = calcolaMedia(statistics.getRespTimeMean(), statistics.getRespTimeVariance(),
+        stats = calcolaMedia(ensStatistics.getRespTimeMean(), ensStatistics.getRespTimeVariance(),
                 roundStatistics.getRespTimeMean(), n, alpha, node);
-        statistics.setRespTimeMean(stats.get(0));
-        statistics.setRespTimeConfidenceInterval(stats.get(1));
-        //System.out.println("*" + stats.get(0) + " " + stats.get(1) + " " + stats.get(2));
+        //System.out.println("* mean=" + stats.get(0) + " confInt=" + stats.get(1) + " var=" + stats.get(2));
+
+        ensStatistics.setRespTimeMean(stats.get(0));
+        ensStatistics.setRespTimeConfidenceInterval(stats.get(1));
+        ensStatistics.setRespTimeVariance(stats.get(2));
+
+        ensStatistics.getRespTimeMeanList().add(roundStatistics.getRespTimeMean());
+        ensStatistics.getRespTimeConfidenceIntervalList().add(roundStatistics.getRespTimeConfidenceInterval());
 
         // POP
-        stats = calcolaMedia(statistics.getPopulationMean(), statistics.getPopulationVariance(),
+        stats = calcolaMedia(ensStatistics.getPopulationMean(), ensStatistics.getPopulationVariance(),
                 roundStatistics.getPopulationMean(), n, alpha, node);
-        statistics.setPopulationMean(stats.get(0));
-        statistics.setPopulationConfInt(stats.get(1));
-        //System.out.println("*" + stats.get(0) + " " + stats.get(1) + " " + stats.get(2));
+        //System.out.println("**" + stats.get(0) + " " + stats.get(1) + " " + stats.get(2));
+
+        ensStatistics.setPopulationMean(stats.get(0));
+        ensStatistics.setPopulationConfInt(stats.get(1));
+        ensStatistics.setPopulationVariance(stats.get(2));
+
+        ensStatistics.getPopulationMeanList().add(roundStatistics.getPopulationMean());
+        ensStatistics.getPopulationConfIntList().add(roundStatistics.getPopulationConfInt());
     }
 
 
     private ArrayList<Double> calcolaMedia(double mean, double variance, double x, int n, double alpha, String node) {
 
-        System.out.println(node);
+        //System.out.println(node);
+
+        double stdDev, criticalValue, confInt;
 
         double d = x - mean; //d è la differenza tra x(i) e la media x(i-1)
-        System.out.println("d = " + d + " x = " + x + " mean = " + mean);
+        //System.out.println("d = " + d + " x = " + x + " mean = " + mean);
 
         mean += d / n;
-        System.out.println("new mean " + mean);
+        //System.out.println("new mean " + mean);
 
-        if (n > 1)
+        if (n > 1) {
             variance += ((n - 1) * pow(d, 2)) / n;
-        else
+            //System.out.println(variance);
+
+            stdDev = pow(variance / n, 0.5);
+            //System.out.println(stdDev);
+
+            Rvms rvms = new Rvms();
+
+            criticalValue = rvms.idfStudent((n - 1), 1 - (alpha / 2));
+            //System.out.println(criticalValue);
+            confInt = (criticalValue * stdDev) / Math.sqrt(n - 1);
+            //System.out.println(confInt);
+        }
+        else{
             variance = 0.0;
+            confInt = 0.0;
+        }
+/*
+        System.out.println(variance);
 
         double stdDev = pow(variance / n, 0.5);
+        System.out.println(stdDev);
 
         Rvms rvms = new Rvms();
 
         double criticalValue = rvms.idfStudent((n - 1), 1 - (alpha / 2));
+        System.out.println(criticalValue);
         double confInt = (criticalValue * stdDev) / Math.sqrt(n - 1);
-
+        System.out.println(confInt);
+*/
         ArrayList<Double> result = new ArrayList<>();
         result.add(mean);
-        result.add(variance);
         result.add(confInt);
+        result.add(variance);
 
         return result;
     }
