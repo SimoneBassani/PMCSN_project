@@ -19,7 +19,7 @@ public class Configuration {
         return single_instance;
     }
 
-    private int policy = 1;                 //1 = transient, 2 = steady-state
+    private int policy = 2;                 //1 = transient, 2 = steady-state
 
     private int round = 25;                //numero di ripetizioni per transient. 25 nel transient, 1 nello steady-state
 
@@ -27,7 +27,7 @@ public class Configuration {
     private int batchObservation = 4096;    //numero di osservazioni nel batch
 
     private double START = 0.0;             //start time
-    private double STOP = 1000.0;         //terminal time. 1000 nel transient, 10000 nello steady-state
+    private double STOP = 10000.0;         //terminal time. 1000 nel transient, 10000 nello steady-state
 
     private int N = 20;                     //number of servers
     private int S = 20;                      //limite job in clet per alg2

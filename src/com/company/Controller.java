@@ -311,8 +311,11 @@ public class Controller {
                      */
                     //TRANSIENT
                     if(policy == 1)
+                        /*
                         statisticsHandler.computeMeanAndStdDeviation(cletStatistics, jobProcessedClet,
                                 events.get(e).getExecutionTime());
+                                */
+                        System.out.println("test");
 
                     //STEADY
                     else{
@@ -420,7 +423,8 @@ public class Controller {
                      * if policy == 2 calcolo steady-state stats
                      */
                     if(policy == 1)
-                        statisticsHandler.computeMeanAndStdDeviation(cloudStatistics, jobProcessedCloud, events.get(e).getExecutionTime());
+                        System.out.println("test");
+                        //statisticsHandler.computeMeanAndStdDeviation(cloudStatistics, jobProcessedCloud, events.get(e).getExecutionTime());
                     else{
                         batchMeanHandler.computeMeanForBatchMean(systemBatchStats, systemBatchCount,
                                 events.get(e).getExecutionTime(), area, time, alpha);
@@ -495,9 +499,12 @@ public class Controller {
          */
         if(policy == 1) {
             // CALCOLO STAT POPOLAZIONE DEL ROUND. SALVA IN CLETSTATISTICS E CLOUDSTATISTICS
+            System.out.println("test");
+            /*
             statisticsHandler.updateStatistics(time, events, sums, n, jobProcessed, jobProcessedClet, jobProcessedCloud,
                     jobArrived, area, areaClet, areaCloud, areaClet_1, areaClet_2, areaCloud_1, areaCloud_2, cletStatistics,
                     cloudStatistics);
+                    */
 /*
             System.out.println("**stat di fine round");
             System.out.println(cletStatistics.getRespTimeMean());
@@ -1042,7 +1049,8 @@ public class Controller {
                      * if policy == 2 calcolo steady-state stats
                      */
                     if (policy == 1)
-                        statisticsHandler.computeMeanAndStdDeviation(cloudStatistics, jobProcessedCloud, events.get(e).getExecutionTime());
+                        System.out.println("test");
+                        //statisticsHandler.computeMeanAndStdDeviation(cloudStatistics, jobProcessedCloud, events.get(e).getExecutionTime());
                     else {
 
                         batchMeanHandler.computeMeanForBatchMean(systemBatchStats, systemBatchCount,

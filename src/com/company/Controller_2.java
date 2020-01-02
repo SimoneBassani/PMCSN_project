@@ -10,12 +10,10 @@ import com.company.handler.StatisticsHandler;
 import com.company.utility.Configuration;
 import com.company.utility.Printer;
 import com.company.utility.Rngs;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static java.lang.System.exit;
 
 /**
  * Il controller si occupa di eseguire i due algoritmi previsti per la schedulazione
@@ -45,7 +43,7 @@ public class Controller_2 {
     /**
      * Metodo che esegue l'algoritmo 1
      */
-    public void runAlgorithm1(Statistics cletStatistics, Statistics cletStatistics_1, Statistics cletStatistics_2,
+    public void runAlgorithm_1(Statistics cletStatistics, Statistics cletStatistics_1, Statistics cletStatistics_2,
                               Statistics cloudStatistics, Statistics cloudStatistics_1, Statistics cloudStatistics_2,
                               Statistics systemStatistics, Statistics systemStatistics_1, Statistics systemStatistics_2) throws IOException {
 
@@ -74,6 +72,7 @@ public class Controller_2 {
         double areaCloud_1 = 0.0;          //time integrated number in the node
         double areaCloud_2 = 0.0;          //time integrated number in the node
 
+        //todo trasformare in int
         long cletBatchCount = 0;
         long cletBatchCount_1 = 0;
         long cletBatchCount_2 = 0;
@@ -96,18 +95,6 @@ public class Controller_2 {
         else
             method = "steady";
 
-        /**
-         * Strutture per calcolare media e varianza di ogni batch per i casi: tempo di risposta, popolazione, altro???
-         */
-        Statistics cletBatchStats = new Statistics(0, 0, 0);
-        Statistics cletBatchStats_1 = new Statistics(0, 0, 0);
-        Statistics cletBatchStats_2 = new Statistics(0, 0, 0);
-        Statistics cloudBatchStats = new Statistics(0, 0, 0);
-        Statistics cloudBatchStats_1 = new Statistics(0, 0, 0);
-        Statistics cloudBatchStats_2 = new Statistics(0, 0, 0);
-        Statistics systemBatchStats = new Statistics(0, 0, 0);
-        Statistics systemBatchStats_1 = new Statistics(0, 0, 0);
-        Statistics systemBatchStats_2 = new Statistics(0, 0, 0);
 
         //inizializzo tutti gli stream
         Rngs r = new Rngs();
@@ -161,7 +148,6 @@ public class Controller_2 {
         time.setCurrent(start);
         //System.out.println("*** getCurrent & getNext:" + time.getCurrent() + " " + time.getNext() + "***");
 
-        //todo invece di usare il tempo usare un evento speciale?
         /**
          * Le condizioni di uscita sono:
          * event[0].x == 0               //processo degli arrivi di classe 1 bloccato
@@ -185,15 +171,15 @@ public class Controller_2 {
             //printer.printEventList(0, events, dimList);
 
             double t = time.getNext() - time.getCurrent();
+            area += t * jobInSystem;        //aggiorno l'area totale
+            area_1 += t * jobInSystem_1;        //aggiorno l'area totale
+            area_2 += t * jobInSystem_2;        //aggiorno l'area totale
             areaClet += t * jobInClet;        //aggiorno l'area per clet
             areaClet_1 += t * jobInClet_1;        //aggiorno l'area per clet
             areaClet_2 += t * jobInClet_2;        //aggiorno l'area per clet
             areaCloud += t * jobInCloud;        //aggiorno l'area per cloud
             areaCloud_1 += t * jobInCloud_1;        //aggiorno l'area per cloud
             areaCloud_2 += t * jobInCloud_2;        //aggiorno l'area per cloud
-            area += t * jobInSystem;        //aggiorno l'area totale
-            area_1 += t * jobInSystem_1;        //aggiorno l'area totale
-            area_2 += t * jobInSystem_2;        //aggiorno l'area totale
 
             time.setCurrent(time.getNext());                //il clock avanza all'evento scelto
 
@@ -313,7 +299,6 @@ public class Controller_2 {
                      */
                     //TRANSIENT
                     if(policy == 1) {
-                        //statisticsHandler.computeMeanAndStdDeviation(cletStatistics, jobProcessedClet, events.get(e).getExecutionTime());
                         statisticsHandler.computeMeanOfMeans(cletStatistics, events.get(e).getExecutionTime(),
                                 areaClet, time, (int)jobOutClet, alpha, "clet");
 
@@ -335,7 +320,7 @@ public class Controller_2 {
                                     area_2, time, (int)jobOutSystem_2, alpha, "system2");
                         }
                     }
-                        //STEADY
+                    //STEADY
                     else{
                         /**
                          * Se ho analizzato b-elementi, ho un batch completo e posso riazzerare il contatore e procedere
@@ -343,26 +328,26 @@ public class Controller_2 {
                          * Il valore calcolato viene aggiunto alla lista nel batchMeanHandler
                          */
 
-                        batchMeanHandler.computeMeanForBatchMean(systemBatchStats, systemBatchCount,
+                        batchMeanHandler.computeMeanForBatchMean(systemStatistics, systemBatchCount,
                                 events.get(e).getExecutionTime(), area, time, alpha);
 
                         // calcolo la media con l'A di Welford
-                        batchMeanHandler.computeMeanForBatchMean(cletBatchStats, cletBatchCount,
+                        batchMeanHandler.computeMeanForBatchMean(cletStatistics, cletBatchCount,
                                 events.get(e).getExecutionTime(), areaClet, time, alpha);
 
                         //controllo la classe del job per aggiornare l'istanza giusta
                         if(events.get(e).getClassIndex() == 0) {
-                            batchMeanHandler.computeMeanForBatchMean(cletBatchStats_1, cletBatchCount_1,
+                            batchMeanHandler.computeMeanForBatchMean(cletStatistics_1, cletBatchCount_1,
                                     events.get(e).getExecutionTime(), areaClet_1, time, alpha);
 
-                            batchMeanHandler.computeMeanForBatchMean(systemBatchStats_1, systemBatchCount_1,
+                            batchMeanHandler.computeMeanForBatchMean(systemStatistics_1, systemBatchCount_1,
                                     events.get(e).getExecutionTime(), area_1, time, alpha);
                         }
                         else {
-                            batchMeanHandler.computeMeanForBatchMean(cletBatchStats_2, cletBatchCount_2,
+                            batchMeanHandler.computeMeanForBatchMean(cletStatistics_2, cletBatchCount_2,
                                     events.get(e).getExecutionTime(), areaClet_2, time, alpha);
 
-                            batchMeanHandler.computeMeanForBatchMean(systemBatchStats_2, systemBatchCount_2,
+                            batchMeanHandler.computeMeanForBatchMean(systemStatistics_2, systemBatchCount_2,
                                     events.get(e).getExecutionTime(), area_2, time, alpha);
                         }
 
@@ -372,27 +357,27 @@ public class Controller_2 {
                          * statisticType = 0 per nodo, = 1 per job1, = 2 per job2, = 3 per movedJob
                          */
                         if (cletBatchCount == batchSize) {
-                            batchMeanHandler.updateBatchStatistics_2(cletBatchStats);
+                            batchMeanHandler.updateBatchStatistics_2(cletStatistics);
                             cletBatchCount = 0;
                         }
                         if (cletBatchCount_1 == batchSize) {
-                            batchMeanHandler.updateBatchStatistics_2(cletBatchStats_1);
+                            batchMeanHandler.updateBatchStatistics_2(cletStatistics_1);
                             cletBatchCount_1 = 0;
                         }
                         if (cletBatchCount_2 == batchSize) {
-                            batchMeanHandler.updateBatchStatistics_2(cletBatchStats_2);
+                            batchMeanHandler.updateBatchStatistics_2(cletStatistics_2);
                             cletBatchCount_2 = 0;
                         }
                         if (systemBatchCount == batchSize) {
-                            batchMeanHandler.updateBatchStatistics_2(systemBatchStats);
+                            batchMeanHandler.updateBatchStatistics_2(systemStatistics);
                             systemBatchCount = 0;
                         }
                         if (systemBatchCount_1 == batchSize) {
-                            batchMeanHandler.updateBatchStatistics_2(systemBatchStats_1);
+                            batchMeanHandler.updateBatchStatistics_2(systemStatistics_1);
                             systemBatchCount_1 = 0;
                         }
                         if (systemBatchCount_2 == batchSize) {
-                            batchMeanHandler.updateBatchStatistics_2(systemBatchStats_2);
+                            batchMeanHandler.updateBatchStatistics_2(systemStatistics_2);
                             systemBatchCount_2 = 0;
                         }
                     }
@@ -440,8 +425,8 @@ public class Controller_2 {
                      * if policy == 1 calcolo transient stats
                      * if policy == 2 calcolo steady-state stats
                      */
+                    //TRANSIENT
                     if(policy == 1) {
-                        //statisticsHandler.computeMeanAndStdDeviation(cloudStatistics, jobProcessedCloud, events.get(e).getExecutionTime());
                         statisticsHandler.computeMeanOfMeans(cloudStatistics, events.get(e).getExecutionTime(),
                                 areaCloud, time, (int)jobOutCloud, alpha, "cloud");
 
@@ -463,53 +448,54 @@ public class Controller_2 {
                                     area_2, time, (int) jobOutSystem_2, alpha, "system2");
                         }
                     }
+                    //STEADY-STATE
                     else{
-                        batchMeanHandler.computeMeanForBatchMean(systemBatchStats, systemBatchCount,
+                        batchMeanHandler.computeMeanForBatchMean(systemStatistics, systemBatchCount,
                                 events.get(e).getExecutionTime(), area, time, alpha);
 
                         // calcolo la media con l'A di Welford
-                        batchMeanHandler.computeMeanForBatchMean(cloudBatchStats, cloudBatchCount,
+                        batchMeanHandler.computeMeanForBatchMean(cloudStatistics, cloudBatchCount,
                                 events.get(e).getExecutionTime(), areaCloud, time, alpha);
 
                         //controllo la classe del job per aggiornare l'istanza giusta
                         if(events.get(e).getClassIndex() == 0) {
-                            batchMeanHandler.computeMeanForBatchMean(cloudBatchStats_1, cloudBatchCount_1,
+                            batchMeanHandler.computeMeanForBatchMean(cloudStatistics_1, cloudBatchCount_1,
                                     events.get(e).getExecutionTime(), areaCloud_1, time, alpha);
 
-                            batchMeanHandler.computeMeanForBatchMean(systemBatchStats_1, systemBatchCount_1,
+                            batchMeanHandler.computeMeanForBatchMean(systemStatistics_1, systemBatchCount_1,
                                     events.get(e).getExecutionTime(), area_1, time, alpha);
                         }
                         else {
-                            batchMeanHandler.computeMeanForBatchMean(cloudBatchStats_2, cloudBatchCount_2,
+                            batchMeanHandler.computeMeanForBatchMean(cloudStatistics_2, cloudBatchCount_2,
                                     events.get(e).getExecutionTime(), areaCloud_2, time, alpha);
 
-                            batchMeanHandler.computeMeanForBatchMean(systemBatchStats_2, systemBatchCount_2,
+                            batchMeanHandler.computeMeanForBatchMean(systemStatistics_2, systemBatchCount_2,
                                     events.get(e).getExecutionTime(), area_2, time, alpha);
                         }
 
                         if (cloudBatchCount == batchSize) {
-                            batchMeanHandler.updateBatchStatistics_2(cloudBatchStats);
+                            batchMeanHandler.updateBatchStatistics_2(cloudStatistics);
                             cloudBatchCount = 0;
                         }
 
                         if (cloudBatchCount_1 == batchSize) {
-                            batchMeanHandler.updateBatchStatistics_2(cloudBatchStats_1);
+                            batchMeanHandler.updateBatchStatistics_2(cloudStatistics_1);
                             cloudBatchCount_1 = 0;
                         }
                         if (cloudBatchCount_2 == batchSize) {
-                            batchMeanHandler.updateBatchStatistics_2(cloudBatchStats_2);
+                            batchMeanHandler.updateBatchStatistics_2(cloudStatistics_2);
                             cloudBatchCount_2 = 0;
                         }
                         if(systemBatchCount == batchSize){
-                            batchMeanHandler.updateBatchStatistics_2(systemBatchStats);
+                            batchMeanHandler.updateBatchStatistics_2(systemStatistics);
                             systemBatchCount = 0;
                         }
                         if(systemBatchCount_1 == batchSize){
-                            batchMeanHandler.updateBatchStatistics_2(systemBatchStats_1);
+                            batchMeanHandler.updateBatchStatistics_2(systemStatistics_1);
                             systemBatchCount_1 = 0;
                         }
                         if(systemBatchCount_2 == batchSize){
-                            batchMeanHandler.updateBatchStatistics_2(systemBatchStats_2);
+                            batchMeanHandler.updateBatchStatistics_2(systemStatistics_2);
                             systemBatchCount_2 = 0;
                         }
                     }
@@ -524,87 +510,53 @@ public class Controller_2 {
                 }
             }
         }
-        //FUORI DAL ROUND
 
-        /*
-        printer.printJobStat(jobInSystem, jobInSystem_1, jobInSystem_2, jobInClet, jobInClet_1, jobInClet_2, jobInCloud,
-                jobInCloud_1, jobInCloud_2, jobOutSystem, jobOutSystem_1, jobOutSystem_2, jobOutClet, jobOutClet_1,
-                jobOutClet_2, jobOutCloud, jobOutCloud_1, jobOutCloud_2, time);
-        */
-        /*
-        printer.printStatistics(time, events, sums, n, jobProcessed, jobProcessedClet, jobProcessedCloud, jobArrived,
-                area, areaClet, areaCloud, areaClet1, areaClet2, areaCloud1, areaCloud2);
-         */
+        printer.printSystemStatus(jobInSystem, jobInClet, jobInClet_1, jobInClet_2, jobInCloud, jobInCloud_1, jobInCloud_2);
 
-        if(policy == 1) {
+        printer.printJobStat(jobInSystem, jobInClet, jobInClet_1, jobInClet_2, jobInCloud, jobInCloud_1, jobInCloud_2,
+                jobOutSystem, jobOutClet, jobOutClet_1, jobOutClet_2, jobOutCloud, jobOutCloud_1, jobOutCloud_2,
+                0, time);
 
-/*
-            System.out.println("**stat di fine round");
-            System.out.println(cletStatistics.getRespTimeMean());
-            System.out.println(cletStatistics.getRespTimeConfidenceInterval());
-            //System.out.println(cletStatistics.getTotalJob());
-
-            System.out.println(cloudStatistics.getRespTimeMean());
-            System.out.println(cloudStatistics.getRespTimeConfidenceInterval());
-            //System.out.println(cloudStatistics.getTotalJob());
-*/
-            round = round+2;
-            init = 1;
-            sarrival[0] = 0.0;
-            sarrival[1] = 0.0;
-        }
         /**
          * Adesso ogni lista dei batch ha le medie di ogni batch. Posso calcolare la media della statistica
          */
         if(policy == 2){
-        //else{
             //calcolo la mean-of-means per ogni statistica
             System.out.println("\nCLET");
-            batchMeanHandler.computeMeanOfMeans(cletBatchStats, alpha);
+            batchMeanHandler.computeMeanOfMeans(cletStatistics, alpha);
             System.out.println("\nCLET 1");
-            batchMeanHandler.computeMeanOfMeans(cletBatchStats_1, alpha);
+            batchMeanHandler.computeMeanOfMeans(cletStatistics_1, alpha);
             System.out.println("\nCLET 2");
-            batchMeanHandler.computeMeanOfMeans(cletBatchStats_2, alpha);
+            batchMeanHandler.computeMeanOfMeans(cletStatistics_2, alpha);
             System.out.println("\nCLOUD");
-            batchMeanHandler.computeMeanOfMeans(cloudBatchStats, alpha);
+            batchMeanHandler.computeMeanOfMeans(cloudStatistics, alpha);
             System.out.println("\nCLOUD 1");
-            batchMeanHandler.computeMeanOfMeans(cloudBatchStats_1, alpha);
+            batchMeanHandler.computeMeanOfMeans(cloudStatistics_1, alpha);
             System.out.println("\nCLOUD 2");
-            batchMeanHandler.computeMeanOfMeans(cloudBatchStats_2, alpha);
+            batchMeanHandler.computeMeanOfMeans(cloudStatistics_2, alpha);
             System.out.println("\nSYSTEM");
-            batchMeanHandler.computeMeanOfMeans(systemBatchStats, alpha);
+            batchMeanHandler.computeMeanOfMeans(systemStatistics, alpha);
             System.out.println("\nSYSTEM 1");
-            batchMeanHandler.computeMeanOfMeans(systemBatchStats_1, alpha);
+            batchMeanHandler.computeMeanOfMeans(systemStatistics_1, alpha);
             System.out.println("\nSYSTEM 2");
-            batchMeanHandler.computeMeanOfMeans(systemBatchStats_2, alpha);
+            batchMeanHandler.computeMeanOfMeans(systemStatistics_2, alpha);
 
             // stampa valori su file
-            /*
-            method = "steady";
-            alg = "alg1";
-            */
-            //todo rendere generale la scrittura su file
-            printer.printOnFile(cletBatchStats, "cloudlet", method, alg, "global");
-            printer.printOnFile(cletBatchStats_1, "cloudlet", method, alg, "class1");
-            printer.printOnFile(cletBatchStats_2, "cloudlet", method, alg,"class2");
-
-            printer.printOnFile(cloudBatchStats, "cloud", method, alg, "global");
-            printer.printOnFile(cloudBatchStats_1, "cloud", method, alg, "class1");
-            printer.printOnFile(cloudBatchStats_2, "cloud", method, alg, "class2");
-
-            printer.printOnFile(systemBatchStats, "system", method, alg, "global");
-            printer.printOnFile(systemBatchStats_1, "system", method, alg, "class1");
-            printer.printOnFile(systemBatchStats_2, "system", method, alg, "class2");
-
-            //printer.printSteadyStatsOnFile(cletStatistics, cloudStatistics, 1);
+            printer.printStatOnFile(cletStatistics, cletStatistics_1, cletStatistics_2, cloudStatistics,
+                    cloudStatistics_1, cloudStatistics_2, systemStatistics, systemStatistics_1, systemStatistics_2,
+                    method, alg);
         }
+        round = round+2;
+        init = 1;
+        sarrival[0] = 0.0;
+        sarrival[1] = 0.0;
     }
 
 
     /**
      * Metodo che esegue l'algoritmo 2
      */
-    public void runAlgorithm2(Statistics cletStatistics, Statistics cletStatistics_1, Statistics cletStatistics_2,
+    public void runAlgorithm_2(Statistics cletStatistics, Statistics cletStatistics_1, Statistics cletStatistics_2,
                               Statistics cloudStatistics, Statistics cloudStatistics_1, Statistics cloudStatistics_2,
                               Statistics systemStatistics, Statistics systemStatistics_1, Statistics systemStatistics_2) throws IOException {
 
@@ -659,25 +611,8 @@ public class Controller_2 {
         else
             method = "steady";
 
-        /**
-         * Strutture per calcolare media e relativo intervallo di confidenza di ogni batch per le statistiche:
-         * - tempo di risposta
-         * - popolazione
-         * - throughput ?
-         */
-        /*
-        Statistics cletBatchStats = new Statistics(0, 0, 0);
-        Statistics cletBatchStats_1 = new Statistics(0, 0, 0);
-        Statistics cletBatchStats_2 = new Statistics(0, 0, 0);
-        */
-        Statistics cloudBatchStats = new Statistics(0, 0, 0);
-        Statistics cloudBatchStats_1 = new Statistics(0, 0, 0);
-        Statistics cloudBatchStats_2 = new Statistics(0, 0, 0);
+        //todo inserire oggetto per movedJob
         Statistics movedBatchStats = new Statistics(0, 0, 0);
-        Statistics systemBatchStats = new Statistics(0, 0, 0);
-        Statistics systemBatchStats_1 = new Statistics(0, 0, 0);
-        Statistics systemBatchStats_2 = new Statistics(0, 0, 0);
-
 
         //inizializzo tutti gli stream
         Rngs r = new Rngs();
@@ -719,8 +654,6 @@ public class Controller_2 {
             events.add(i, event);
         }
         printer.printEventList(0, events, dimList);
-        //printer.printSystemStatus(jobInSystem, jobInClet, jobInClet_1, jobInClet_2, jobInCloud,
-        //        jobInCloud_1, jobInCloud_2, contInterrotti);
 
         /**
          * Inizializzo la lista per l'integrale. Ne porto avanti una, alla fine la dividerò in lista per il clet e
@@ -737,7 +670,6 @@ public class Controller_2 {
 
         SystemTime time = new SystemTime();
         time.setCurrent(start);
-        //System.out.println("*** getCurrent & getNext:" + time.getCurrent() + " " + time.getNext() + "***");
 
         /**
          * Le condizioni di uscita sono:
@@ -747,7 +679,6 @@ public class Controller_2 {
          */
         while ((events.get(0).getStatus() != 0) || (jobInSystem != 0)) {
 
-            //System.out.println("size lista: " + events.size());
             printer.printEventList(0, events, dimList);
 
             //todo controllare thr
@@ -780,8 +711,6 @@ public class Controller_2 {
             time.setNext(events.get(e).getNextTime());
             //System.out.println("\nnextTime: " + time.getNext());
 
-            //printer.printEventList(0, events, dimList);
-
             double t = time.getNext() - time.getCurrent();
             area += t * jobInSystem;        //aggiorno l'area totale
             area_1 += t * jobInSystem_1;        //aggiorno l'area totale
@@ -810,22 +739,18 @@ public class Controller_2 {
 */
                 jobInSystem++;
                 jobArrived++;
-                //System.out.println("job numero: " + jobArrived);
 
                 /**
                  * Per l'evento di arrivo trattato genero un nuovo tempo di arrivo. I primi due eventi in nextTime()
                  * avranno il tempo di arrivo del prossimo job di classe 1 e 2
                  */
                 events.get(e).setNextTime(controllerHandler.getArrival(r, round, sarrival, arrival_rate, e));
-                //System.out.println("indice: " + e + " nuovo tempo di arrivo: " + events.get(e).getNextTime());
 
                 /**
                  * Se il tempo di arrivo è oltre lo STOP blocco il processo degli arrivi
                  */
                 if (events.get(e).getNextTime() > stop) {
                     events.get(e).setStatus(0);
-
-                    //System.out.println("\n\n*****   ho oltrepassato STOP. Chiusura porte    *****\n\n");
                 }
 
                 /**
@@ -934,8 +859,6 @@ public class Controller_2 {
 
                         cletBatchCount_1++;
                         systemBatchCount_1++;
-
-                        //System.out.println("job di classe 1 con dep-time = " + time.getCurrent());
                     }
                     else {
                         jobInClet_2--;
@@ -946,8 +869,6 @@ public class Controller_2 {
 
                         cletBatchCount_2++;
                         systemBatchCount_2++;
-
-                        //System.out.println("job di classe 2 con dep-time = " + time.getCurrent());
                     }
 
                     /**
@@ -987,7 +908,7 @@ public class Controller_2 {
                          * Il valore calcolato viene aggiunto alla lista nel batchMeanHandler
                          */
 
-                        batchMeanHandler.computeMeanForBatchMean(systemBatchStats, systemBatchCount,
+                        batchMeanHandler.computeMeanForBatchMean(systemStatistics, systemBatchCount,
                                 events.get(e).getExecutionTime(), area, time, alpha);
 
                         // calcolo la media con l'A di Welford
@@ -999,14 +920,14 @@ public class Controller_2 {
                             batchMeanHandler.computeMeanForBatchMean(cletStatistics_1, cletBatchCount_1,
                                     events.get(e).getExecutionTime(), areaClet_1, time, alpha);
 
-                            batchMeanHandler.computeMeanForBatchMean(systemBatchStats_1, systemBatchCount_1,
+                            batchMeanHandler.computeMeanForBatchMean(systemStatistics_1, systemBatchCount_1,
                                     events.get(e).getExecutionTime(), area_1, time, alpha);
                         }
                         else {
                             batchMeanHandler.computeMeanForBatchMean(cletStatistics_2, cletBatchCount_2,
                                     events.get(e).getExecutionTime(), areaClet_2, time, alpha);
 
-                            batchMeanHandler.computeMeanForBatchMean(systemBatchStats_2, systemBatchCount_2,
+                            batchMeanHandler.computeMeanForBatchMean(systemStatistics_2, systemBatchCount_2,
                                     events.get(e).getExecutionTime(), area_2, time, alpha);
                         }
 
@@ -1029,20 +950,19 @@ public class Controller_2 {
                             cletBatchCount_2 = 0;
                         }
                         if (systemBatchCount == batchSize) {
-                            batchMeanHandler.updateBatchStatistics_2(systemBatchStats);
+                            batchMeanHandler.updateBatchStatistics_2(systemStatistics);
                             systemBatchCount = 0;
                         }
                         if (systemBatchCount_1 == batchSize) {
-                            batchMeanHandler.updateBatchStatistics_2(systemBatchStats_1);
+                            batchMeanHandler.updateBatchStatistics_2(systemStatistics_1);
                             systemBatchCount_1 = 0;
                         }
                         if (systemBatchCount_2 == batchSize) {
-                            batchMeanHandler.updateBatchStatistics_2(systemBatchStats_2);
+                            batchMeanHandler.updateBatchStatistics_2(systemStatistics_2);
                             systemBatchCount_2 = 0;
                         }
                     }
                     events.get(e).setStatus(0);         //il server torna idle
-                    //System.out.println("server con indice " + e + " torna idle");
 
                     //cletDepartureTimes.add(time.getCurrent());
 
@@ -1072,10 +992,6 @@ public class Controller_2 {
 
                         cloudBatchCount_1++;
                         systemBatchCount_1++;
-/*
-                        System.out.println(jobOutCloud_1);
-                        System.out.println("job classe 1 con dep-time = " + time.getCurrent());
-                        */
                     }
                     else {
                         jobInCloud_2--;
@@ -1086,8 +1002,6 @@ public class Controller_2 {
 
                         cloudBatchCount_2++;
                         systemBatchCount_2++;
-
-                        //System.out.println("job classe 2 job con dep-time = " + time.getCurrent());
                     }
                     /**
                      * CLOUD
@@ -1117,26 +1031,26 @@ public class Controller_2 {
                         }
                     }
                     else {
-                        batchMeanHandler.computeMeanForBatchMean(systemBatchStats, systemBatchCount,
+                        batchMeanHandler.computeMeanForBatchMean(systemStatistics, systemBatchCount,
                                 events.get(e).getExecutionTime(), area, time, alpha);
 
                         // calcolo la media con l'A di Welford
-                        batchMeanHandler.computeMeanForBatchMean(cloudBatchStats, cloudBatchCount,
+                        batchMeanHandler.computeMeanForBatchMean(cloudStatistics, cloudBatchCount,
                                 events.get(e).getExecutionTime(), areaCloud, time, alpha);
 
                         //controllo la classe del job per aggiornare l'istanza giusta
                         if(events.get(e).getClassIndex() == 0) {
-                            batchMeanHandler.computeMeanForBatchMean(cloudBatchStats_1, cloudBatchCount_1,
+                            batchMeanHandler.computeMeanForBatchMean(cloudStatistics_1, cloudBatchCount_1,
                                     events.get(e).getExecutionTime(), areaCloud_1, time, alpha);
 
-                            batchMeanHandler.computeMeanForBatchMean(systemBatchStats_1, systemBatchCount_1,
+                            batchMeanHandler.computeMeanForBatchMean(systemStatistics_1, systemBatchCount_1,
                                     events.get(e).getExecutionTime(), area_1, time, alpha);
                         }
                         else {
-                            batchMeanHandler.computeMeanForBatchMean(cloudBatchStats_2, cloudBatchCount_2,
+                            batchMeanHandler.computeMeanForBatchMean(cloudStatistics_2, cloudBatchCount_2,
                                     events.get(e).getExecutionTime(), areaCloud_2, time, alpha);
 
-                            batchMeanHandler.computeMeanForBatchMean(systemBatchStats_2, systemBatchCount_2,
+                            batchMeanHandler.computeMeanForBatchMean(systemStatistics_2, systemBatchCount_2,
                                     events.get(e).getExecutionTime(), area_2, time, alpha);
                         }
 
@@ -1146,16 +1060,16 @@ public class Controller_2 {
                         }
 
                         if (cloudBatchCount == batchSize) {
-                            batchMeanHandler.updateBatchStatistics_2(cloudBatchStats);
+                            batchMeanHandler.updateBatchStatistics_2(cloudStatistics);
                             cloudBatchCount = 0;
                         }
 
                         if (cloudBatchCount_1 == batchSize) {
-                            batchMeanHandler.updateBatchStatistics_2(cloudBatchStats_1);
+                            batchMeanHandler.updateBatchStatistics_2(cloudStatistics_1);
                             cloudBatchCount_1 = 0;
                         }
                         if (cloudBatchCount_2 == batchSize) {
-                            batchMeanHandler.updateBatchStatistics_2(cloudBatchStats_2);
+                            batchMeanHandler.updateBatchStatistics_2(cloudStatistics_2);
                             cloudBatchCount_2 = 0;
                         }
                         if(movedJob == batchSize){
@@ -1163,30 +1077,25 @@ public class Controller_2 {
                             movedJob = 0;
                         }
                         if(systemBatchCount == batchSize){
-                            batchMeanHandler.updateBatchStatistics_2(systemBatchStats);
+                            batchMeanHandler.updateBatchStatistics_2(systemStatistics);
                             systemBatchCount = 0;
                         }
                         if(systemBatchCount_1 == batchSize){
-                            batchMeanHandler.updateBatchStatistics_2(systemBatchStats_1);
+                            batchMeanHandler.updateBatchStatistics_2(systemStatistics_1);
                             systemBatchCount_1 = 0;
                         }
                         if(systemBatchCount_2 == batchSize){
-                            batchMeanHandler.updateBatchStatistics_2(systemBatchStats_2);
+                            batchMeanHandler.updateBatchStatistics_2(systemStatistics_2);
                             systemBatchCount_2 = 0;
                         }
                     }
-                    //cloudDepartureTimes.add(time.getCurrent());
 
                     events.get(e).setStatus(0); //il server torna idle
-                    //System.out.println("server con indice " + e + " torna idle");
 
                     printer.printEventList(0, events, dimList);
                 }
             }
-
             printer.printEventList(0, events, dimList);
-
-            //printer.printSystemStatus(jobInSystem, jobInClet, jobInClet_1, jobInClet_2, jobInCloud, jobInCloud_1, jobInCloud_2, contInterrotti);
         }
         printer.printSystemStatus(jobInSystem, jobInClet, jobInClet_1, jobInClet_2, jobInCloud, jobInCloud_1, jobInCloud_2);
 
@@ -1194,21 +1103,11 @@ public class Controller_2 {
                 jobOutSystem, jobOutClet, jobOutClet_1, jobOutClet_2, jobOutCloud, jobOutCloud_1, jobOutCloud_2,
                 movedJobCount, time);
 
-        //TRANSIENT
-        //if(policy == 1) {
-/*
-        statisticsHandler.updateStatistics(time, events, sums, n, jobProcessed, jobProcessedClet, jobProcessedCloud, jobArrived,
-                area, areaClet, areaCloud, areaClet_1, areaClet_2, areaCloud_1, areaCloud_2, cletStatistics, cloudStatistics);
-*/
-            //statisticsHandler.updateTransientStatistics(cletStatistics, cletStatistics_1, cletStatistics_2, cletStatistics);
-        //}
-
         /**
          * Adesso ogni lista dei batch ha le medie di ogni batch. Posso calcolare la media della statistica
          */
         //STEADY
         if(policy == 2){
-        //else {
             System.out.println("job 2 totali arrivati nel clet: " + cont);
 
             System.out.println("\nCLET");
@@ -1218,39 +1117,23 @@ public class Controller_2 {
             System.out.println("\nCLET 2");
             batchMeanHandler.computeMeanOfMeans(cletStatistics_2, alpha);
             System.out.println("\nCLOUD");
-            batchMeanHandler.computeMeanOfMeans(cloudBatchStats, alpha);
+            batchMeanHandler.computeMeanOfMeans(cloudStatistics, alpha);
             System.out.println("\nCLOUD 1");
-            batchMeanHandler.computeMeanOfMeans(cloudBatchStats_1, alpha);
+            batchMeanHandler.computeMeanOfMeans(cloudStatistics_1, alpha);
             System.out.println("\nCLOUD 2");
-            batchMeanHandler.computeMeanOfMeans(cloudBatchStats_2, alpha);
+            batchMeanHandler.computeMeanOfMeans(cloudStatistics_2, alpha);
             System.out.println("\nMOVED JOB");
             batchMeanHandler.computeMeanOfMeans(movedBatchStats, alpha);
             System.out.println("\nSYSTEM");
-            batchMeanHandler.computeMeanOfMeans(systemBatchStats, alpha);
+            batchMeanHandler.computeMeanOfMeans(systemStatistics, alpha);
             System.out.println("\nSYSTEM 1");
-            batchMeanHandler.computeMeanOfMeans(systemBatchStats_1, alpha);
+            batchMeanHandler.computeMeanOfMeans(systemStatistics_1, alpha);
             System.out.println("\nSYSTEM 2");
-            batchMeanHandler.computeMeanOfMeans(systemBatchStats_2, alpha);
+            batchMeanHandler.computeMeanOfMeans(systemStatistics_2, alpha);
 
             // stampa valori su file
-            /*
-            method = "steady";
-            alg = "alg2";
-            */
-            printer.printOnFile(cletStatistics, "cloudlet", method, alg, "global");
-            printer.printOnFile(cletStatistics_1, "cloudlet", method, alg, "class1");
-            printer.printOnFile(cletStatistics_2, "cloudlet", method, alg,"class2");
-
-            printer.printOnFile(cloudBatchStats, "cloud", method, alg, "global");
-            printer.printOnFile(cloudBatchStats_1, "cloud", method, alg, "class1");
-            printer.printOnFile(cloudBatchStats_2, "cloud", method, alg, "class2");
-
-            printer.printOnFile(systemBatchStats, "system", method, alg, "global");
-            printer.printOnFile(systemBatchStats_1, "system", method, alg, "class1");
-            printer.printOnFile(systemBatchStats_2, "system", method, alg, "class2");
-
-            //scrive i risultati sul file
-            //printer.printSteadyStatsOnFile(cletStatistics, cloudStatistics, algorithm);
+            printer.printStatOnFile(cletStatistics, cletStatistics_1, cletStatistics_2, cloudStatistics, cloudStatistics_1,
+                    cloudStatistics_2, systemStatistics, systemStatistics_1, systemStatistics_2, method, alg);
         }
 
         round = round + 2;
@@ -1294,7 +1177,6 @@ public class Controller_2 {
         double departureTime = arrivalTime + executionTime;     //tempo di partenza del job
 
         int idleServer = findServer(events, dimList);            //ottengo l'indice di un server idle del clet
-        //System.out.println("idle server scelto: " + idleServer + " per job di indice: " + classIndex);
 
         if(idleServer == 0) {
             System.out.println("\n\n +++ CLET PIENO +++ \n\n");
@@ -1313,10 +1195,6 @@ public class Controller_2 {
          * è impostato al tempo corrente del clock + il tempo di esecuzione generato.
          * "status" diventa 1 per segnalare che è busy.
          */
-/*
-        System.out.println("arriveTime: " + arrivalTime + "\nexecutionTime in clet: " + executionTime +
-                "\ntotale: " + departureTime);
-*/
         events.get(idleServer).setNextTime(departureTime);  //il server conterrà in nextTime il tempo di partenza
         events.get(idleServer).setStatus(1);                //server diventa busy
         events.get(idleServer).setLocation(0);              //è assegnato al clet
@@ -1347,6 +1225,7 @@ public class Controller_2 {
 
         int i = 2;
         while(i<dimList && !trovato){
+            //todo prendo il primo job2 trovato nel clet
             //prendo nella lista degli eventi il primo job di classe 2 nel clet
             if(events.get(i).getClassIndex() == 1 && events.get(i).getStatus() == 1) {
                 //System.out.println("sposto il job in posizione " + i + " di next-time " + events.get(i).getNextTime());
@@ -1365,8 +1244,6 @@ public class Controller_2 {
 
         events.get(i).setStatus(0);
         sendToClet(r,job1Arrived,events,sums,0,dimList,time);
-
-        //copiaEvento(job1Arrived, events.get(i));
 
         /**
          * Al job 2 che viene spostato devo aggiungere un setup per lo spostamento. Non lo aggiungo a "getNextTime()"
@@ -1427,35 +1304,27 @@ public class Controller_2 {
             departureTime = departureTime + setup;
         }
 
-/*
-        System.out.println("arriveTime: " + arrivalTime + "\nexecutionTime in cloud: " + executionTime +
-                "\ntotale: " + departureTime);
-*/
         /**
          * controllo se c'è un server disponibile nel cloud, quindi:
          * -    se lo trovo affido a lui l'evento arrivato
          * -    aggiungo alla lista un nuovo server del cloud a cui affido l'evento
          */
         int idleServer = findCloudServer(events, dimList);
-        //System.out.println("class index: " + classIndex);
 
-        /**
-         * Assegno l'evento ad un server già esistente del cloud. NextTime() dei server contiene il tempo di partenza
-         */
+
+        //Assegno l'evento ad un server già esistente del cloud. NextTime() dei server contiene il tempo di partenza
         if(idleServer != 0){
             events.get(idleServer).setNextTime(departureTime);
             events.get(idleServer).setExecutionTime(executionTime);
             events.get(idleServer).setClassIndex(classIndex);
             events.get(idleServer).setStatus(1);
             events.get(idleServer).setMoved(event.getMoved());
-            //System.out.println("il server di indice " + idleServer + " diventa busy");
 
             sums.get(idleServer).setService(sums.get(idleServer).getService() + executionTime);
             sums.get(idleServer).setServed(sums.get(idleServer).getServed() + 1);
         }
-        /**
-         * Aggiungo un nuovo server al cloud e gli assegno l'evento da eseguire
-         */
+
+        //Aggiungo un nuovo server al cloud e gli assegno l'evento da eseguire
         else{
             Event newEvent = new Event();
             newEvent.setNextTime(departureTime);
@@ -1477,9 +1346,10 @@ public class Controller_2 {
      * generate the next service time in the Cloudlet, with rate 0.45 for class 1 and 0.27 for class 2
      */
     public double getCletService(Rngs r, int type) {
-        //todo controllare.Idea per differenziare gli stream
+        //todo controllare. Idea per differenziare gli stream
         if(round>0)
             round = round+2;
+
         r.selectStream(type + round);
         double service = exponential(1/service_rate_clet[type], r);
 
@@ -1494,6 +1364,7 @@ public class Controller_2 {
         //todo controllare.Idea per differenziare gli stream
         if(round>0)
             round = round+2;
+
         r.selectStream(type + round);
         double service = exponential(1/service_rate_cloud[type], r);
 
